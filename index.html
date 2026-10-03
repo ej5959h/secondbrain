@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>포춘옷장</title>
+<meta name="description" content="사주로 보는 오늘의 행운 코디">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf3f4;
+    --bg-deep: #f3e1e6;
+    --ink: #3d2a33;
+    --ink-soft: #7a6470;
+    --pink: #f2b8c6;
+    --pink-deep: #d9869c;
+    --cream: #fffaf5;
+    --gold: #c9a35b;
+    --gold-soft: #ead7a8;
+    --line: #ecd3da;
+    --shadow: 0 20px 50px -20px rgba(120, 60, 80, .35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 20% 10%, #fff 0, transparent 40%),
+      radial-gradient(circle at 80% 90%, var(--bg-deep) 0, transparent 50%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "Gowun Dodum", system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 48px;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: "Gowun Batang", serif; margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  header h1 { font-size: 30px; letter-spacing: .04em; }
+  header p { margin: 6px 0 0; color: var(--ink-soft); font-size: 14px; }
+
+  /* ---------- 옷장 ---------- */
+  .closet { width: min(100%, 420px); position: relative; }
+  .crown {
+    height: 70px;
+    margin: 0 18px -2px;
+    background: linear-gradient(var(--cream), #f7e9ec);
+    border: 2px solid var(--gold-soft);
+    border-bottom: none;
+    border-radius: 200px 200px 0 0 / 70px 70px 0 0;
+    display: grid; place-items: center;
+    position: relative;
+  }
+  .crown::before {
+    content: "♛";
+    font-size: 26px;
+    color: var(--gold);
+    position: absolute; top: 14px;
+  }
+  .body {
+    position: relative;
+    background: linear-gradient(#fff6f8, #f9e4ea);
+    border: 2px solid var(--gold-soft);
+    border-radius: 14px 14px 6px 6px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+    perspective: 1400px;
+  }
+  .inside {
+    min-height: 460px;
+    background:
+      linear-gradient(90deg, transparent 49.6%, rgba(201,163,91,.0) 50%),
+      linear-gradient(#fffdfb, #fbeff2);
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .rod {
+    position: absolute; left: 14px; right: 14px; top: 12px;
+    height: 4px; border-radius: 4px; background: var(--gold-soft);
+  }
+  .doors {
+    position: absolute; inset: 14px;
+    display: flex;
+    pointer-events: none;
+    transform-style: preserve-3d;
+  }
+  .door {
+    flex: 1;
+    pointer-events: auto;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.7), transparent 60%),
+      linear-gradient(#f9d3dd, #f2bccb);
+    border: 2px solid var(--gold-soft);
+    position: relative;
+    transition: transform 1s cubic-bezier(.6,.05,.3,1);
+    backface-visibility: hidden;
+    display: grid; place-items: center;
+  }
+  .door.left  { transform-origin: left center;  border-radius: 8px 0 0 8px; }
+  .door.right { transform-origin: right center; border-radius: 0 8px 8px 0; }
+  .door::before {
+    content: "";
+    position: absolute; inset: 22px 18px;
+    border: 1.5px solid rgba(201,163,91,.6);
+    border-radius: 60px 60px 10px 10px;
+  }
+  .door::after {
+    content: "";
+    position: absolute; top: 50%;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff3d0, var(--gold));
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
+  .door.left::after  { right: 12px; }
+  .door.right::after { left: 12px; }
+  .door .heart { font-size: 28px; color: #fff; opacity: .85; position: relative; }
+  .closet.open .door.left  { transform: rotateY(-105deg); }
+  .closet.open .door.right { transform: rotateY(105deg); }
+  .closet.open .doors { pointer-events: none; }
+  .closet.open .door { pointer-events: none; }
+
+  .tap-hint {
+    text-align: center; margin-top: 18px;
+    color: var(--pink-deep); font-size: 15px;
+    animation: bob 1.8s ease-in-out infinite;
+  }
+  .closet.open + .tap-hint { visibility: hidden; }
+  @keyframes bob { 50% { transform: translateY(-4px); } }
+  .legs { display: flex; justify-content: space-between; margin: 0 24px; }
+  .legs span {
+    width: 18px; height: 14px;
+    background: var(--gold-soft);
+    border-radius: 0 0 8px 8px;
+  }
+
+  /* ---------- 옷장 안 화면 ---------- */
+  .panel { display: none; animation: fade .6s .5s both; }
+  .panel.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } }
+
+  .panel h2 { font-size: 21px; text-align: center; margin-top: 10px; }
+  .panel .sub { text-align: center; color: var(--ink-soft); font-size: 13px; margin: 6px 0 20px; }
+
+  form { display: grid; gap: 16px; }
+  .field label, .field .label {
+    display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 6px;
+  }
+  input[type="text"], input[type="date"], select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    font: inherit; font-size: 16px;
+    color: var(--ink);
+    appearance: none;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--pink-deep); }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label {
+    margin: 0; text-align: center;
+    padding: 11px 0;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .seg input:checked + label { background: var(--pink); border-color: var(--pink-deep); }
+  .seg input:focus-visible + label { outline: 2px solid var(--pink-deep); }
+  .check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+  .check input { accent-color: var(--pink-deep); width: 16px; height: 16px; }
+  .note { font-size: 12px; color: var(--ink-soft); margin: 6px 0 0; }
+  .error { color: #c0405e; font-size: 13px; min-height: 1em; margin: -4px 0 0; text-align: center; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--pink-deep), #e7a0b2);
+    color: #fff;
+    font-size: 16px;
+    box-shadow: 0 8px 20px -8px rgba(217,134,156,.8);
+  }
+  .btn:active { transform: translateY(1px); }
+  .link {
+    display: block; margin: 16px auto 0;
+    background: none; border: none;
+    color: var(--ink-soft); font-size: 13px;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  /* ---------- 결과 ---------- */
+  .lucky {
+    display: flex; align-items: center; gap: 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .swatches { display: flex; }
+  .swatches span {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--line);
+    margin-left: -8px;
+  }
+  .swatches span:first-child { margin-left: 0; }
+  .lucky strong { font-family: "Gowun Batang", serif; font-size: 16px; }
+  .lucky p { margin: 2px 0 0; font-size: 12px; color: var(--ink-soft); }
+
+  .looks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .look {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px;
+    position: relative;
+  }
+  .look .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--bg-deep);
+    color: var(--pink-deep);
+    margin-bottom: 8px;
+  }
+  .look .icon { position: absolute; top: 12px; right: 14px; font-size: 18px; }
+  .look h3 { font-size: 15px; line-height: 1.35; }
+  .look p { margin: 6px 0 0; font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+  .look.mood { grid-column: 1 / -1; background: linear-gradient(120deg, #fff, #fdf0f3); }
+  .why { font-size: 12px; color: var(--ink-soft); line-height: 1.6; margin: 14px 2px 0; }
+
+  footer { margin-top: 28px; font-size: 11px; color: var(--ink-soft); text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door, .panel, .tap-hint { transition: none; animation: none; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>포춘옷장</h1>
+    <p>오늘의 사주가 골라주는 행운 코디</p>
+  </header>
+
+  <div class="closet" id="closet">
+    <div class="crown"></div>
+    <div class="body">
+      <div class="inside">
+        <div class="rod"></div>
+
+        <!-- 사주 정보 입력 -->
+        <section class="panel" id="panel-form" aria-labelledby="form-title">
+          <h2 id="form-title">나의 사주 정보</h2>
+          <p class="sub">한 번만 입력하면 다음부터는 바로 코디를 보여드려요</p>
+          <form id="saju-form" novalidate>
+            <div class="field">
+              <label for="name">이름 (닉네임)</label>
+              <input type="text" id="name" maxlength="12" placeholder="예) 은지" autocomplete="nickname">
+            </div>
+            <div class="field">
+              <span class="label">성별</span>
+              <div class="seg">
+                <input type="radio" name="gender" id="g-f" value="여성" checked><label for="g-f">여성</label>
+                <input type="radio" name="gender" id="g-m" value="남성"><label for="g-m">남성</label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="birth">생년월일 (양력)</label>
+              <input type="date" id="birth" min="1930-01-01" max="2025-12-31" required>
+              <p class="note">음력 생일이면 양력으로 바꿔서 입력해주세요</p>
+            </div>
+            <div class="field">
+              <label for="hour">태어난 시간</label>
+              <select id="hour"></select>
+              <label class="check"><input type="checkbox" id="hour-unknown"> 시간을 몰라요</label>
+            </div>
+            <p class="error" id="error" role="alert"></p>
+            <button type="submit" class="btn">오늘의 코디 보기</button>
+          </form>
+        </section>
+
+        <!-- 추천 결과 -->
+        <section class="panel" id="panel-result" aria-labelledby="result-title">
+          <h2 id="result-title"></h2>
+          <p class="sub" id="result-date"></p>
+          <div class="lucky">
+            <div class="swatches" id="swatches"></div>
+            <div>
+              <strong id="lucky-title"></strong>
+              <p id="lucky-desc"></p>
+            </div>
+          </div>
+          <div class="looks">
+            <article class="look"><span class="tag">상의</span><span class="icon">👚</span><h3 id="top"></h3><p id="top-d"></p></article>
+            <article class="look"><span class="tag">하의</span><span class="icon">👗</span><h3 id="bottom"></h3><p id="bottom-d"></p></article>
+            <article class="look"><span class="tag">장신구</span><span class="icon">💍</span><h3 id="acc"></h3><p id="acc-d"></p></article>
+            <article class="look"><span class="tag">분위기</span><span class="icon">✨</span><h3 id="vibe"></h3><p id="vibe-d"></p></article>
+          </div>
+          <p class="why" id="why"></p>
+          <button class="link" id="reset" type="button">사주 정보 다시 입력하기</button>
+        </section>
+      </div>
+
+      <div class="doors" id="doors">
+        <button class="door left" aria-label="옷장 열기"><span class="heart">♡</span></button>
+        <button class="door right" aria-label="옷장 열기"><span class="heart">♡</span></button>
+      </div>
+    </div>
+    <div class="legs"><span></span><span></span></div>
+  </div>
+  <p class="tap-hint">옷장을 눌러 열어보세요</p>
+
+  <footer>재미로 보는 사주 코디예요 · 입력한 정보는 이 기기에만 저장돼요</footer>
+
+<script>
+(() => {
+  const STORAGE_KEY = "fortune-closet:saju";
+
+  // ---------- 사주 기초 데이터 ----------
+  const STEMS = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
+  const BRANCHES = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"];
+  const HOURS = [
+    "자시 (23:30~01:29)", "축시 (01:30~03:29)", "인시 (03:30~05:29)", "묘시 (05:30~07:29)",
+    "진시 (07:30~09:29)", "사시 (09:30~11:29)", "오시 (11:30~13:29)", "미시 (13:30~15:29)",
+    "신시 (15:30~17:29)", "유시 (17:30~19:29)", "술시 (19:30~21:29)", "해시 (21:30~23:29)"
+  ];
+  // 오행 순서: 목 → 화 → 토 → 금 → 수 (앞이 뒤를 생(生)해요)
+  const ELEMENTS = ["목", "화", "토", "금", "수"];
+  const stemElement = (s) => Math.floor(s / 2);          // 갑을=목, 병정=화, 무기=토, 경신=금, 임계=수
+  const branchElement = (b) => [4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4][b];
+
+  // 그레고리력 날짜 → 율리우스 일수. 2000-01-01(무오일) 기준으로 일진을 계산해요.
+  function julianDay(y, m, d) {
+    const a = Math.floor((14 - m) / 12);
+    const yy = y + 4800 - a;
+    const mm = m + 12 * a - 3;
+    return d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4)
+      - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+  }
+  function dayPillar(y, m, d) {
+    const jd = julianDay(y, m, d);
+    return { stem: (jd + 9) % 10, branch: (jd + 1) % 12 };
+  }
+
+  // ---------- 오행별 코디 ----------
+  const LOOKS = {
+    목: {
+      name: "숲의 기운", colors: ["#7fa36b", "#b9d3a0", "#e8f0dc"], colorText: "그린 · 민트 · 연두",
+      tops: [["세이지 그린 니트 가디건", "부드러운 짜임이 성장의 기운을 살려줘요"], ["민트 스트라이프 셔츠", "세로 줄무늬는 쭉 뻗는 나무를 닮았어요"], ["올리브 린넨 블라우스", "자연스러운 소재가 편안함을 더해요"]],
+      bottoms: [["아이보리 롱 플리츠 스커트", "길게 떨어지는 라인이 목(木)과 잘 어울려요"], ["카키 와이드 슬랙스", "곧은 실루엣으로 차분하게 정리해요"], ["연두빛 미디 랩스커트", "가볍게 흔들리는 실루엣이 산뜻해요"]],
+      accs: [["우드 비즈 팔찌", "나무 소재가 오늘의 기운을 채워줘요"], ["잎사귀 모양 귀걸이", "작은 포인트로 생기를 더해요"], ["라탄 미니백", "자연 소재로 균형을 맞춰요"]],
+      vibes: [["싱그러운 봄 소풍", "새로운 시작에 마음이 열리는 날이에요. 처음 가는 카페도 좋아요."], ["숲속 산책 무드", "느긋하게 걸으며 아이디어를 키우기 좋은 날이에요."]]
+    },
+    화: {
+      name: "꽃불의 기운", colors: ["#e07a8b", "#f4a7a0", "#fbd9d3"], colorText: "코랄 · 로즈 · 피치",
+      tops: [["코랄 퍼프 소매 블라우스", "밝은 붉은 계열이 화(火)의 기운을 북돋아요"], ["로즈 핑크 크롭 니트", "따뜻한 색이 표정까지 환하게 만들어요"], ["피치 리본 셔츠", "리본 포인트로 사랑스러움을 더해요"]],
+      bottoms: [["크림 A라인 미니스커트", "밝은 바탕이 상의 컬러를 돋보이게 해요"], ["버건디 벨벳 스커트", "깊은 붉은색으로 존재감을 살려요"], ["화이트 하이웨이스트 팬츠", "깔끔하게 받쳐줘서 균형이 좋아요"]],
+      accs: [["하트 펜던트 목걸이", "화(火)의 따뜻한 마음을 담았어요"], ["레드 새틴 헤어리본", "머리 위의 작은 불꽃 같은 포인트예요"], ["골드 후프 귀걸이", "반짝임으로 시선을 모아줘요"]],
+      vibes: [["주인공 무드", "사람들 앞에 서면 빛나는 날이에요. 발표나 약속을 잡아보세요."], ["설레는 데이트", "표현하면 마음이 잘 전해지는 날이에요."]]
+    },
+    토: {
+      name: "포근한 대지의 기운", colors: ["#c9a27a", "#e6cfb0", "#f5ead9"], colorText: "베이지 · 카멜 · 크림",
+      tops: [["카멜 브이넥 니트", "흙빛 컬러가 마음을 단단하게 잡아줘요"], ["크림 케이블 스웨터", "포근한 짜임이 안정감을 줘요"], ["베이지 칼라 블라우스", "단정한 칼라로 신뢰감을 더해요"]],
+      bottoms: [["브라운 코듀로이 스커트", "도톰한 소재가 토(土)의 묵직함을 닮았어요"], ["베이지 치노 팬츠", "편안하면서도 정돈된 느낌이에요"], ["모카 니트 롱스커트", "부드럽게 감싸주는 실루엣이에요"]],
+      accs: [["진주 스터드 귀걸이", "은은한 광택으로 품위를 더해요"], ["가죽 스트랩 시계", "시간을 차분히 쓰게 도와줘요"], ["스웨이드 숄더백", "따뜻한 질감으로 마무리해요"]],
+      vibes: [["차분한 브런치", "믿음직한 사람이 되는 날이에요. 중요한 약속에 좋아요."], ["포근한 집순이 데이", "정리하고 쌓아두기 좋은 날이에요. 무리하지 않아도 괜찮아요."]]
+    },
+    금: {
+      name: "반짝이는 보석의 기운", colors: ["#d9d9de", "#f4f1ec", "#c9a35b"], colorText: "화이트 · 실버 · 골드",
+      tops: [["화이트 레이스 블라우스", "맑은 흰색이 금(金)의 깨끗함을 살려요"], ["실버 그레이 새틴 셔츠", "은은한 광택으로 세련되게 표현해요"], ["아이보리 셋업 재킷", "또렷한 라인으로 결단력을 더해요"]],
+      bottoms: [["펄 그레이 슬립 스커트", "흐르는 광택이 우아함을 더해요"], ["화이트 와이드 데님", "깨끗한 색으로 전체를 맑게 해요"], ["차콜 테일러드 팬츠", "선명한 마무리로 단정하게 잡아요"]],
+      accs: [["실버 체인 목걸이", "금속 장신구가 오늘의 행운을 불러요"], ["진주 헤어핀", "작지만 확실한 반짝임이에요"], ["골드 시그넷 반지", "자신감을 손끝에 더해줘요"]],
+      vibes: [["우아한 공주 무드", "똑 부러지게 결정하기 좋은 날이에요. 미뤄둔 일을 정리해보세요."], ["반짝이는 갤러리 데이트", "아름다운 걸 보며 기준을 세우기 좋은 날이에요."]]
+    },
+    수: {
+      name: "맑은 물결의 기운", colors: ["#4d6a8f", "#9bb6d4", "#dce7f2"], colorText: "네이비 · 스카이블루 · 블랙",
+      tops: [["스카이블루 오버핏 셔츠", "맑은 파란색이 생각을 시원하게 해줘요"], ["네이비 세일러 블라우스", "깊은 물빛이 차분함을 더해요"], ["블랙 터틀넥 니트", "어두운 색이 수(水)의 깊이를 담아요"]],
+      bottoms: [["인디고 플레어 스커트", "물결처럼 흐르는 실루엣이에요"], ["블랙 스트레이트 팬츠", "깔끔하게 중심을 잡아줘요"], ["연청 롱 데님 스커트", "편안하게 흐르는 무드를 완성해요"]],
+      accs: [["물방울 크리스탈 귀걸이", "투명한 반짝임이 물의 기운을 닮았어요"], ["블루 스카프", "목에 두르면 흐름이 부드러워져요"], ["실버 발찌", "가벼운 움직임에 행운을 더해요"]],
+      vibes: [["새벽 바다 무드", "직감이 좋아지는 날이에요. 떠오르는 생각을 메모해두세요."], ["조용한 북카페", "혼자만의 시간에서 지혜가 생기는 날이에요."]]
+    }
+  };
+
+  // 같은 날, 같은 사람이면 같은 추천이 나오도록 하는 간단한 시드
+  function pick(list, seed) { return list[seed % list.length]; }
+
+  function recommend(info, today) {
+    const [by, bm, bd] = info.birth.split("-").map(Number);
+    const mine = dayPillar(by, bm, bd);
+    const myEl = stemElement(mine.stem);
+    const t = dayPillar(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    const todayEl = stemElement(t.stem);
+
+    // 행운 오행 규칙:
+    // - 오늘 기운이 나를 누르면(극) → 나를 도와주는 오행(생해주는 것)으로 보호
+    // - 오늘 기운이 나와 같아 넘치면 → 내가 생해주는 오행으로 흘려보내기
+    // - 그 외에는 → 나를 생해주는 오행으로 힘 보태기
+    const helper = (myEl + 4) % 5;    // 나를 생해주는 오행
+    const outlet = (myEl + 1) % 5;    // 내가 생해주는 오행
+    const controlsMe = (todayEl + 2) % 5 === myEl;
+    let luckyEl, reason;
+    if (controlsMe) {
+      luckyEl = helper;
+      reason = `오늘은 ${ELEMENTS[todayEl]}의 기운이 나의 ${ELEMENTS[myEl]}을(를) 누르는 날이라, 나를 북돋아주는 ${ELEMENTS[helper]}의 색으로 지켜줘요.`;
+    } else if (todayEl === myEl) {
+      luckyEl = outlet;
+      reason = `오늘은 나와 같은 ${ELEMENTS[myEl]}의 기운이 넘치는 날이라, ${ELEMENTS[outlet]}의 색으로 기운을 자연스럽게 흘려보내요.`;
+    } else {
+      luckyEl = helper;
+      reason = `오늘은 ${ELEMENTS[todayEl]}의 기운이 흐르는 날이에요. 나의 ${ELEMENTS[myEl]}에 힘을 보태주는 ${ELEMENTS[helper]}의 색이 행운을 불러요.`;
+    }
+
+    const look = LOOKS[ELEMENTS[luckyEl]];
+    const hourSeed = info.hour === "" ? 0 : Number(info.hour);
+    const seed = julianDay(today.getFullYear(), today.getMonth() + 1, today.getDate()) + mine.stem + hourSeed;
+    return {
+      myPillar: `${STEMS[mine.stem]}${BRANCHES[mine.branch]}`,
+      myEl: ELEMENTS[myEl],
+      todayPillar: `${STEMS[t.stem]}${BRANCHES[t.branch]}`,
+      luckyEl: ELEMENTS[luckyEl],
+      look,
+      top: pick(look.tops, seed),
+      bottom: pick(look.bottoms, seed + 1),
+      acc: pick(look.accs, seed + hourSeed + 2),
+      vibe: pick(look.vibes, seed),
+      reason
+    };
+  }
+
+  // ---------- 저장 ----------
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+  }
+  function save(info) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(info)); } catch {}
+  }
+  function clear() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  }
+
+  // ---------- 화면 ----------
+  const $ = (id) => document.getElementById(id);
+  const closet = $("closet");
+  const hourSel = $("hour");
+  hourSel.innerHTML = HOURS.map((h, i) => `<option value="${i}">${h}</option>`).join("");
+  hourSel.value = "6";
+  $("hour-unknown").addEventListener("change", (e) => { hourSel.disabled = e.target.checked; });
+
+  function show(panel) {
+    document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === panel));
+  }
+
+  function renderResult(info) {
+    const today = new Date();
+    const r = recommend(info, today);
+    const name = info.name || "공주님";
+    $("result-title").textContent = `${name}의 오늘 코디`;
+    $("result-date").textContent =
+      `${today.getMonth() + 1}월 ${today.getDate()}일 ${r.todayPillar}일 · 나의 일주 ${r.myPillar} (${r.myEl})`;
+    $("swatches").innerHTML = r.look.colors.map((c) => `<span style="background:${c}"></span>`).join("");
+    $("lucky-title").textContent = `오늘의 행운: ${r.look.name}`;
+    $("lucky-desc").textContent = `행운 컬러 ${r.look.colorText}`;
+    $("top").textContent = r.top[0];       $("top-d").textContent = r.top[1];
+    $("bottom").textContent = r.bottom[0]; $("bottom-d").textContent = r.bottom[1];
+    $("acc").textContent = r.acc[0];       $("acc-d").textContent = r.acc[1];
+    $("vibe").textContent = r.vibe[0];     $("vibe-d").textContent = r.vibe[1];
+    $("why").textContent = r.reason;
+    show("panel-result");
+  }
+
+  function openCloset() {
+    if (closet.classList.contains("open")) return;
+    const saved = load();
+    if (saved) renderResult(saved); else show("panel-form");
+    closet.classList.add("open");
+  }
+  $("doors").addEventListener("click", openCloset);
+
+  $("saju-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const birth = $("birth").value;
+    if (!birth) { $("error").textContent = "생년월일을 입력해주세요"; return; }
+    $("error").textContent = "";
+    const info = {
+      name: $("name").value.trim(),
+      gender: document.querySelector('input[name="gender"]:checked').value,
+      birth,
+      hour: $("hour-unknown").checked ? "" : hourSel.value
+    };
+    save(info);
+    renderResult(info);
+  });
+
+  $("reset").addEventListener("click", () => {
+    const saved = load();
+    if (saved) {
+      $("name").value = saved.name;
+      $("birth").value = saved.birth;
+      document.querySelector(`input[name="gender"][value="${saved.gender}"]`).checked = true;
+      $("hour-unknown").checked = saved.hour === "";
+      hourSel.disabled = saved.hour === "";
+      if (saved.hour !== "") hourSel.value = saved.hour;
+    }
+    clear();
+    show("panel-form");
+  });
+})();
+</script>
+</body>
+</html>
