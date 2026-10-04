@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "seed-design": {
+      "command": "bunx",
+      "args": ["--bun", "@seed-design/mcp@latest", "--mode", "websocket"]
+    }
+  }
+}
