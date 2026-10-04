@@ -1,7 +1,12 @@
 {
   "/Users/hong-eunji/4th-hong-eunji": {
     "무시할_목록": [],
-    "항상_올릴_목록": ["index.html", ".mcp.json", "CLAUDE.md"],
+    "항상_올릴_목록": [
+      "index.html",
+      ".mcp.json",
+      "CLAUDE.md",
+      "index-v1-princess.html"
+    ],
     "양쪽올리기": {
       "베프디_리모트": "bfd",
       "개인_리모트": "personal",
