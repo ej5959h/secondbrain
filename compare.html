@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>포춘옷장 버전 비교</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #ececef;
+    color: #18181b;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", sans-serif;
+  }
+  header {
+    position: sticky; top: 0; z-index: 1;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    padding: 14px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e4e4e7;
+  }
+  header h1 { font-size: 17px; margin: 0 auto 0 0; }
+  header p { margin: 0; font-size: 13px; color: #71717a; }
+  header button {
+    height: 36px; padding: 0 14px;
+    border: 1px solid #d4d4d8; border-radius: 10px;
+    background: #fff; font: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  header button:hover { background: #f4f4f5; }
+  .grid {
+    display: flex; gap: 24px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  figure { margin: 0; flex: 0 0 390px; }
+  figcaption { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  figcaption strong { font-size: 15px; }
+  figcaption a { font-size: 12px; color: #71717a; }
+  iframe {
+    width: 390px; height: 844px;
+    border: 1px solid #d4d4d8; border-radius: 28px;
+    background: #fff;
+    box-shadow: 0 10px 30px -12px rgba(0,0,0,.25);
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>포춘옷장 버전 비교</h1>
+    <p>세 화면 모두 휴대폰 크기(390×844)예요. 하나에 사주를 입력하면 나머지도 새로고침 후 같은 정보로 보여요.</p>
+    <button type="button" id="reload">모두 새로고침</button>
+    <button type="button" id="reset">입력한 사주 지우기</button>
+  </header>
+  <div class="grid">
+    <figure>
+      <figcaption><strong>v1 · 공주 옷장</strong><a href="index-v1-princess.html" target="_blank">따로 열기</a></figcaption>
+      <iframe src="index-v1-princess.html" title="v1 공주 옷장"></iframe>
+    </figure>
+    <figure>
+      <figcaption><strong>v2 · 당근 SEED</strong><a href="index.html" target="_blank">따로 열기</a></figcaption>
+      <iframe src="index.html" title="v2 당근 SEED"></iframe>
+    </figure>
+    <figure>
+      <figcaption><strong>v3 · Tight</strong><a href="index-v3-tight.html" target="_blank">따로 열기</a></figcaption>
+      <iframe src="index-v3-tight.html" title="v3 Tight"></iframe>
+    </figure>
+  </div>
+<script>
+  const frames = () => document.querySelectorAll("iframe");
+  document.getElementById("reload").addEventListener("click", () => {
+    frames().forEach((f) => { f.src = f.getAttribute("src"); });
+  });
+  document.getElementById("reset").addEventListener("click", () => {
+    try { localStorage.removeItem("fortune-closet:saju"); } catch {}
+    frames().forEach((f) => { f.src = f.getAttribute("src"); });
+  });
+</script>
+</body>
+</html>

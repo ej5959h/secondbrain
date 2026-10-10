@@ -37,6 +37,7 @@
     align-items: center;
     padding: 32px 16px 48px;
     overflow-x: hidden;
+    word-break: keep-all;
   }
   h1, h2, h3 { font-family: "Gowun Batang", serif; margin: 0; }
   button { font: inherit; color: inherit; cursor: pointer; }
@@ -250,6 +251,21 @@
   @media (prefers-reduced-motion: reduce) {
     .door, .panel, .tap-hint { transition: none; animation: none; }
   }
+  /* ---------- 다른 날 보기 ---------- */
+  .link[hidden] { display: none; }
+  .closet.settled .panel { animation-delay: 0s; }
+  .other-day { margin-top: 18px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .cal-head strong { font-family: "Gowun Batang", serif; font-size: 17px; }
+  .cal-nav { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--line); background: #fff; color: var(--pink-deep); font-size: 18px; line-height: 1; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+  .cal-w { font-size: 12px; color: var(--ink-soft); padding: 6px 0; }
+  .cal-w:first-child { color: var(--pink-deep); }
+  .cal-d { aspect-ratio: 1; border: none; border-radius: 50%; background: transparent; font-size: 14px; color: var(--ink); }
+  .cal-d:hover { background: var(--bg-deep); }
+  .cal-d.is-today { box-shadow: inset 0 0 0 1.5px var(--pink-deep); color: var(--pink-deep); }
+  .cal-d.is-selected { background: var(--pink-deep); color: #fff; }
+  .cal-d:focus-visible { outline: 2px solid var(--pink-deep); }
 </style>
 </head>
 <body>
@@ -295,6 +311,19 @@
           </form>
         </section>
 
+        <!-- 다른 날 보기 -->
+        <section class="panel" id="panel-cal" aria-labelledby="cal-heading">
+          <h2 id="cal-heading">어느 날의 코디를 볼까요?</h2>
+          <p class="sub">날짜를 고르면 그날의 행운 코디를 보여드려요</p>
+          <div class="cal-head">
+            <button type="button" class="cal-nav" id="cal-prev" aria-label="이전 달">‹</button>
+            <strong id="cal-title"></strong>
+            <button type="button" class="cal-nav" id="cal-next" aria-label="다음 달">›</button>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <button class="link" id="cal-back" type="button">돌아가기</button>
+        </section>
+
         <!-- 추천 결과 -->
         <section class="panel" id="panel-result" aria-labelledby="result-title">
           <h2 id="result-title"></h2>
@@ -313,6 +342,8 @@
             <article class="look"><span class="tag">분위기</span><span class="icon">✨</span><h3 id="vibe"></h3><p id="vibe-d"></p></article>
           </div>
           <p class="why" id="why"></p>
+          <button class="btn other-day" id="other-day" type="button">다른 날도 보기</button>
+          <button class="link" id="back-today" type="button" hidden>오늘 코디로 돌아가기</button>
           <button class="link" id="reset" type="button">사주 정보 다시 입력하기</button>
         </section>
       </div>
@@ -466,29 +497,88 @@
     document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === panel));
   }
 
-  function renderResult(info) {
-    const today = new Date();
-    const r = recommend(info, today);
+  function sameDay(a, b) {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+  let currentInfo = null;
+  let viewDate = new Date();
+
+  function renderResult(info, date = new Date()) {
+    currentInfo = info;
+    viewDate = date;
+    const isToday = sameDay(date, new Date());
+    const r = recommend(info, date);
     const name = info.name || "공주님";
-    $("result-title").textContent = `${name}의 오늘 코디`;
+    const md = `${date.getMonth() + 1}월 ${date.getDate()}일`;
+    $("result-title").textContent = isToday ? `${name}의 오늘 코디` : `${name}의 ${md} 코디`;
     $("result-date").textContent =
-      `${today.getMonth() + 1}월 ${today.getDate()}일 ${r.todayPillar}일 · 나의 일주 ${r.myPillar} (${r.myEl})`;
+      `${md} ${r.todayPillar}일 · 나의 일주 ${r.myPillar} (${r.myEl})`;
     $("swatches").innerHTML = r.look.colors.map((c) => `<span style="background:${c}"></span>`).join("");
-    $("lucky-title").textContent = `오늘의 행운: ${r.look.name}`;
+    $("lucky-title").textContent = `${isToday ? "오늘" : "이날"}의 행운: ${r.look.name}`;
     $("lucky-desc").textContent = `행운 컬러 ${r.look.colorText}`;
     $("top").textContent = r.top[0];       $("top-d").textContent = r.top[1];
     $("bottom").textContent = r.bottom[0]; $("bottom-d").textContent = r.bottom[1];
     $("acc").textContent = r.acc[0];       $("acc-d").textContent = r.acc[1];
     $("vibe").textContent = r.vibe[0];     $("vibe-d").textContent = r.vibe[1];
-    $("why").textContent = r.reason;
+    $("why").textContent = isToday ? r.reason : r.reason.replace(/^오늘은/, "이날은");
+    $("back-today").hidden = isToday;
     show("panel-result");
   }
+
+  // ---------- 다른 날 보기 (달력) ----------
+  let calMonth = new Date();
+  function renderCalendar() {
+    const y = calMonth.getFullYear();
+    const m = calMonth.getMonth();
+    $("cal-title").textContent = `${y}년 ${m + 1}월`;
+    const firstDay = new Date(y, m, 1).getDay();
+    const lastDate = new Date(y, m + 1, 0).getDate();
+    const now = new Date();
+    let html = ["일", "월", "화", "수", "목", "금", "토"].map((w) => `<span class="cal-w">${w}</span>`).join("");
+    for (let i = 0; i < firstDay; i++) html += "<span></span>";
+    for (let d = 1; d <= lastDate; d++) {
+      const day = new Date(y, m, d);
+      const cls = ["cal-d", sameDay(day, now) && "is-today", sameDay(day, viewDate) && "is-selected"].filter(Boolean).join(" ");
+      html += `<button type="button" class="${cls}" data-day="${d}" aria-label="${m + 1}월 ${d}일">${d}</button>`;
+    }
+    $("cal-grid").innerHTML = html;
+  }
+  function scrollToCloset() {
+    window.scrollTo({ top: closet.getBoundingClientRect().top + window.scrollY - 72, behavior: "smooth" });
+  }
+  $("other-day").addEventListener("click", () => {
+    calMonth = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    renderCalendar();
+    show("panel-cal");
+    scrollToCloset();
+  });
+  $("cal-prev").addEventListener("click", () => {
+    calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1);
+    renderCalendar();
+  });
+  $("cal-next").addEventListener("click", () => {
+    calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1);
+    renderCalendar();
+  });
+  $("cal-grid").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-day]");
+    if (!btn || !currentInfo) return;
+    renderResult(currentInfo, new Date(calMonth.getFullYear(), calMonth.getMonth(), Number(btn.dataset.day)));
+    scrollToCloset();
+  });
+  $("cal-back").addEventListener("click", () => show("panel-result"));
+  $("back-today").addEventListener("click", () => {
+    renderResult(currentInfo, new Date());
+    scrollToCloset();
+  });
+
 
   function openCloset() {
     if (closet.classList.contains("open")) return;
     const saved = load();
     if (saved) renderResult(saved); else show("panel-form");
     closet.classList.add("open");
+    setTimeout(() => closet.classList.add("settled"), 1100);
   }
   $("doors").addEventListener("click", openCloset);
 
