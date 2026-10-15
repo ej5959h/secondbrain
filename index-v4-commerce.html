@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>포춘옷장 v4</title>
+<meta name="description" content="사주와 체형으로 보는 오늘의 행운 코디">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* Tight Design System 토큰 (colors_and_type.css 기준) */
+  :root {
+    --tight-pink-50:  rgb(255, 233, 240);
+    --tight-pink-200: rgb(255, 184, 207);
+    --tight-pink-500: rgb(255, 31, 102);
+    --zinc-50:  rgb(250, 250, 250);
+    --zinc-100: rgb(244, 244, 245);
+    --zinc-200: rgb(228, 228, 231);
+    --zinc-300: rgb(212, 212, 216);
+    --zinc-400: rgb(161, 161, 170);
+    --zinc-500: rgb(113, 113, 122);
+    --zinc-600: rgb(82, 82, 91);
+    --zinc-700: rgb(63, 63, 70);
+    --zinc-900: rgb(24, 24, 27);
+    --base-white: rgb(255, 255, 255);
+
+    --bg-base: var(--base-white);
+    --bg-surface: var(--zinc-50);
+    --bg-muted: var(--zinc-100);
+    --bg-inverse: var(--zinc-900);
+    --bg-brand-primary: var(--tight-pink-500);
+    --bg-brand-pressed: rgb(214, 23, 84);
+    --bg-brand-subtle: var(--tight-pink-50);
+    --bg-neutral-disabled: var(--zinc-100);
+    --text-primary: var(--zinc-900);
+    --text-secondary: var(--zinc-600);
+    --text-tertiary: var(--zinc-500);
+    --text-placeholder: var(--zinc-400);
+    --text-disabled: var(--zinc-300);
+    --text-inverse: var(--base-white);
+    --text-brand: var(--tight-pink-500);
+    --text-on-brand: var(--base-white);
+    --text-error: var(--tight-pink-500);
+    --border-default: var(--zinc-200);
+    --border-strong: var(--zinc-300);
+    --border-focus: var(--tight-pink-500);
+    --icon-default: var(--zinc-700);
+
+    --space-2xs: 2px; --space-xs: 4px; --space-xs-plus: 6px; --space-sm: 8px; --space-md: 12px;
+    --space-lg: 16px; --space-xl: 20px; --space-2xl: 24px; --space-3xl: 32px; --space-4xl: 40px; --space-5xl: 48px;
+    --radius-xs: 4px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
+    --radius-2xl: 24px; --radius-full: 9999px;
+    --elevation-1: 0 1px 2px 0 rgba(0,0,0,.04), 0 1px 1px 0 rgba(0,0,0,.04);
+    --elevation-2: 0 2px 4px -1px rgba(0,0,0,.06), 0 4px 8px -2px rgba(0,0,0,.06);
+    --elevation-3: 0 4px 12px -2px rgba(0,0,0,.08), 0 8px 24px -4px rgba(0,0,0,.08);
+    --elevation-4: 0 8px 20px -4px rgba(0,0,0,.10), 0 16px 40px -8px rgba(0,0,0,.10);
+
+    --font-sans: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+                 "Apple SD Gothic Neo", "Noto Sans KR", "Helvetica Neue", Arial, sans-serif;
+    --font-serif: "Noto Serif KR", "Apple SD Gothic Neo", serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 15px; line-height: 20px; letter-spacing: -0.2px;
+    display: flex; flex-direction: column; align-items: center;
+    overflow-x: hidden;
+    word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p { margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  a { color: inherit; }
+  svg.i { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .eyebrow { font-size: 11px; line-height: 13px; font-weight: 700; letter-spacing: .08em; color: var(--text-tertiary); text-transform: uppercase; }
+
+  /* ---------- 앱 바 ---------- */
+  .app-bar {
+    position: sticky; top: 0; z-index: 5;
+    width: 100%; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 var(--space-lg);
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .app-bar h1 { font-size: 17px; line-height: 22px; font-weight: 800; letter-spacing: -0.4px; }
+  .app-bar h1 span { color: var(--text-brand); }
+  .app-bar .date { font-family: var(--font-serif); font-size: 13.5px; font-weight: 500; color: var(--text-secondary); }
+
+  main { width: min(100%, 440px); padding: var(--space-3xl) var(--space-lg) 120px; }
+  .intro { margin-bottom: var(--space-3xl); }
+  .intro .eyebrow { margin-bottom: var(--space-md); }
+  .intro h2 { font-size: 34px; line-height: 41px; letter-spacing: -0.5px; font-weight: 700; }
+  .intro h2 em { font-style: normal; color: var(--text-brand); }
+  .intro p { margin-top: var(--space-md); color: var(--text-secondary); font-size: 15px; }
+
+  /* ---------- 옷장 ---------- */
+  .closet { position: relative; }
+  .crown {
+    height: 40px; margin: 0 var(--space-xl) -1px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-default); border-bottom: none;
+    border-radius: 200px 200px 0 0 / 40px 40px 0 0;
+  }
+  .body {
+    position: relative;
+    background: var(--bg-base);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm);
+    perspective: 1400px;
+  }
+  .inside {
+    min-height: 500px;
+    background: var(--bg-base);
+    border-radius: var(--radius-md);
+    padding: var(--space-2xl) var(--space-md) var(--space-xl);
+    position: relative; overflow: hidden;
+  }
+  .rod { position: absolute; left: var(--space-md); right: var(--space-md); top: var(--space-sm); height: 2px; border-radius: var(--radius-full); background: var(--border-default); }
+  .doors { position: absolute; inset: var(--space-sm); display: flex; gap: 2px; pointer-events: none; transform-style: preserve-3d; }
+  .door {
+    flex: 1; pointer-events: auto;
+    background: var(--bg-muted);
+    border: 1px solid var(--border-default);
+    position: relative;
+    transition: transform 1s cubic-bezier(.6,.05,.3,1);
+    backface-visibility: hidden;
+  }
+  .door.left  { transform-origin: left center;  border-radius: var(--radius-md) 0 0 var(--radius-md); }
+  .door.right { transform-origin: right center; border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+  .door::before {
+    content: ""; position: absolute; inset: var(--space-xl) var(--space-lg);
+    border: 1px solid var(--border-strong);
+    border-radius: 80px 80px var(--radius-sm) var(--radius-sm);
+  }
+  .door::after {
+    content: ""; position: absolute; top: 50%;
+    width: 6px; height: 28px; margin-top: -14px; border-radius: var(--radius-full);
+    background: var(--bg-brand-primary);
+  }
+  .door.left::after  { right: var(--space-md); }
+  .door.right::after { left: var(--space-md); }
+  .door:focus-visible { outline: 1px solid var(--border-focus); outline-offset: -1px; }
+  .closet.open .door.left  { transform: rotateY(-105deg); }
+  .closet.open .door.right { transform: rotateY(105deg); }
+  .closet.open .door { pointer-events: none; }
+  .legs { display: flex; justify-content: space-between; margin: 0 var(--space-2xl); }
+  .legs span { width: 12px; height: 10px; background: var(--border-default); border-radius: 0 0 var(--radius-xs) var(--radius-xs); }
+  .tap-hint { text-align: center; margin-top: var(--space-lg); color: var(--text-tertiary); font-size: 13px; font-weight: 500; }
+  .closet.open + .tap-hint { visibility: hidden; }
+
+  /* ---------- 옷장 안 화면 공통 ---------- */
+  .panel { display: none; animation: fade .2s .6s ease-out both; }
+  .closet.settled .panel { animation-delay: 0s; }
+  .panel.active { display: block; }
+  @keyframes fade { from { opacity: 0; } }
+  .panel-head { margin-bottom: var(--space-2xl); }
+  .panel-head .eyebrow { margin-bottom: var(--space-sm); }
+  .panel-head h2 { font-size: 22px; line-height: 28px; letter-spacing: -0.3px; font-weight: 700; }
+  .panel-head p { margin-top: var(--space-xs); color: var(--text-tertiary); font-size: 13px; line-height: 18px; }
+  .panel-head .date { font-family: var(--font-serif); font-size: 13.5px; font-weight: 500; color: var(--text-secondary); }
+
+  /* ---------- 입력 ---------- */
+  form { display: grid; gap: var(--space-2xl); }
+  .group-title { font-size: 13px; font-weight: 700; color: var(--text-primary); padding-top: var(--space-lg); border-top: 1px solid var(--border-default); }
+  .group-title:first-child { border-top: 0; padding-top: 0; }
+  .field label, .field .label { display: block; font-size: 13px; line-height: 18px; font-weight: 600; color: var(--text-secondary); margin-bottom: var(--space-sm); }
+  .field .label small { font-weight: 500; color: var(--text-tertiary); }
+  input[type="text"], input[type="date"], select {
+    width: 100%; height: 44px; padding: 0 var(--space-md);
+    border: 1px solid var(--border-default); border-radius: var(--radius-sm);
+    background: var(--bg-base);
+    font: inherit; font-size: 15px; color: var(--text-primary);
+    appearance: none; outline: none;
+  }
+  input::placeholder { color: var(--text-placeholder); }
+  input:focus, select:focus { border-color: var(--border-focus); }
+  select:disabled { background: var(--bg-neutral-disabled); color: var(--text-disabled); }
+  /* NavTabs */
+  .seg { display: flex; gap: 4px; padding: 4px; background: var(--zinc-100); border-radius: var(--radius-full); }
+  .seg input, .chips input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label {
+    flex: 1; margin: 0 !important; height: 32px;
+    display: grid !important; place-items: center;
+    border-radius: var(--radius-full);
+    font-size: 13px !important; font-weight: 600 !important; color: var(--text-tertiary) !important;
+    cursor: pointer; transition: .15s;
+  }
+  .seg input:checked + label { background: var(--bg-base); box-shadow: var(--elevation-1); color: var(--text-primary) !important; }
+  .seg input:focus-visible + label, .chips input:focus-visible + label { outline: 1px solid var(--border-focus); }
+  .hint-box {
+    margin-top: var(--space-sm);
+    padding: var(--space-md);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    font-size: 12px; line-height: 17px; color: var(--text-secondary);
+  }
+  .hint-box b { color: var(--text-primary); font-weight: 600; }
+  /* 체형 카드 */
+  .body-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); }
+  .body-cards input { position: absolute; opacity: 0; pointer-events: none; }
+  .field .body-card {
+    margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: var(--space-md) var(--space-xs) var(--space-md);
+    border: 1px solid var(--border-default); border-radius: var(--radius-md);
+    background: var(--bg-base); color: var(--text-primary);
+    cursor: pointer; transition: .15s;
+  }
+  .body-card .sil { width: 40px; height: 78px; margin-bottom: var(--space-xs-plus); fill: none; stroke: var(--zinc-400); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: .15s; }
+  .body-card strong { font-size: 13px; line-height: 18px; font-weight: 700; }
+  .body-card span { font-size: 11px; line-height: 13px; font-weight: 500; color: var(--text-tertiary); }
+  .field .body-card:hover { background: var(--bg-surface); }
+  .body-cards input:checked + .body-card { border-color: var(--text-primary); box-shadow: inset 0 0 0 1px var(--text-primary); }
+  .body-cards input:checked + .body-card .sil { stroke: var(--text-brand); }
+  .body-cards input:focus-visible + .body-card { outline: 1px solid var(--border-focus); outline-offset: 2px; }
+  .body-detail { margin-top: var(--space-sm); padding: var(--space-md); border-radius: var(--radius-sm); background: var(--bg-surface); font-size: 12px; line-height: 17px; color: var(--text-secondary); }
+  .body-detail b { color: var(--text-primary); font-weight: 600; }
+  .body-detail ul { margin: var(--space-sm) 0 0; padding-left: var(--space-lg); }
+  .body-detail .kw { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); margin-top: var(--space-sm); }
+  .body-detail .kw em { font-style: normal; font-size: 11px; font-weight: 700; color: var(--text-tertiary); width: 52px; }
+  .quiz-open { margin-top: var(--space-md); padding: 0; background: none; border: 0; font-size: 13px; font-weight: 600; color: var(--text-brand); }
+  .quiz { margin-top: var(--space-md); padding: var(--space-lg); border: 1px solid var(--border-default); border-radius: var(--radius-lg); }
+  .quiz[hidden] { display: none; }
+  .quiz .bar { height: 2px; border-radius: var(--radius-full); background: var(--zinc-100); margin-bottom: var(--space-md); overflow: hidden; }
+  .quiz .bar i { display: block; height: 100%; background: var(--bg-brand-primary); transition: width .2s ease-out; }
+  .quiz .q-step { font-size: 11px; font-weight: 700; color: var(--text-tertiary); letter-spacing: .04em; }
+  .quiz h5 { margin: var(--space-xs) 0 var(--space-md); font-size: 15px; line-height: 20px; font-weight: 600; }
+  .quiz .opt { display: block; width: 100%; margin-top: var(--space-xs-plus); padding: var(--space-md); text-align: left; border: 1px solid var(--border-default); border-radius: var(--radius-sm); background: var(--bg-base); font-size: 13px; line-height: 18px; transition: .15s; }
+  .quiz .opt:hover { border-color: var(--text-primary); }
+  .quiz .q-result { font-size: 15px; line-height: 20px; }
+  .quiz .q-result b { color: var(--text-brand); }
+  .quiz .q-actions { display: flex; gap: var(--space-sm); margin-top: var(--space-md); }
+  .quiz .q-actions button { height: 32px; padding: 0 var(--space-md); border: 0; border-radius: var(--radius-sm); background: var(--zinc-100); font-size: 13px; font-weight: 600; }
+  /* 결과 화면 체형 전환 탭 */
+  .switch-h { display: flex; justify-content: space-between; align-items: baseline; margin: var(--space-2xl) 0 var(--space-sm); font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .switch-h span { font-size: 11px; font-weight: 500; color: var(--text-tertiary); }
+  .seg button { flex: 1; height: 32px; border: 0; border-radius: var(--radius-full); background: transparent; font-size: 13px; font-weight: 600; color: var(--text-tertiary); transition: .15s; }
+  .seg button[aria-selected="true"] { background: var(--bg-base); box-shadow: var(--elevation-1); color: var(--text-primary); }
+  .seg button:focus-visible { outline: 1px solid var(--border-focus); }
+  /* 스타일 칩 */
+  .chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+  .chips label {
+    margin: 0 !important;
+    height: 34px; padding: 0 var(--space-md);
+    display: inline-flex !important; align-items: center;
+    border: 1px solid var(--border-default); border-radius: var(--radius-full);
+    font-size: 13px !important; font-weight: 600 !important; color: var(--text-secondary) !important;
+    background: var(--bg-base);
+    cursor: pointer; transition: .15s;
+  }
+  .chips input:checked + label { background: var(--bg-inverse); border-color: var(--bg-inverse); color: var(--text-inverse) !important; }
+  /* Toggle 행 */
+  .check {
+    display: flex !important; justify-content: space-between; align-items: center;
+    margin: var(--space-md) 0 0 !important;
+    font-size: 15px !important; font-weight: 400 !important; color: var(--text-primary) !important;
+    cursor: pointer;
+  }
+  .check input { position: absolute; opacity: 0; pointer-events: none; }
+  .check .tog { width: 44px; height: 24px; border-radius: var(--radius-full); background: var(--zinc-200); position: relative; transition: .15s; flex-shrink: 0; }
+  .check .tog::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: var(--radius-full); background: #fff; box-shadow: var(--elevation-1); transition: .15s; }
+  .check input:checked + .tog { background: var(--bg-brand-primary); }
+  .check input:checked + .tog::after { left: 22px; }
+  .check input:focus-visible + .tog { outline: 1px solid var(--border-focus); outline-offset: 2px; }
+  .note { font-size: 12px; line-height: 15px; color: var(--text-tertiary); margin-top: var(--space-xs); }
+  .error { color: var(--text-error); font-size: 12px; min-height: 15px; }
+
+  /* 버튼 */
+  .btn {
+    width: 100%; height: 48px; padding: 0 var(--space-xl);
+    border: 0; border-radius: var(--radius-lg);
+    background: var(--bg-brand-primary); color: var(--text-on-brand);
+    font-size: 17px; line-height: 22px; font-weight: 600;
+    transition: background .15s ease-out;
+  }
+  .btn:hover, .btn:active { background: var(--bg-brand-pressed); }
+  .btn.dark { background: var(--bg-inverse); }
+  .btn.dark:hover { background: var(--zinc-700); }
+  .btn-row { display: flex; gap: var(--space-sm); margin-top: var(--space-md); }
+  .btn-sub {
+    flex: 1; height: 40px; padding: 0 var(--space-lg);
+    border: 0; border-radius: var(--radius-md);
+    background: var(--zinc-100); color: var(--text-primary);
+    font-size: 15px; font-weight: 600;
+    transition: background .15s ease-out;
+  }
+  .btn-sub:hover { background: var(--zinc-200); }
+  .btn-sub[hidden], .link[hidden] { display: none; }
+
+  /* ---------- 결과 ---------- */
+  .palette { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: var(--radius-md); overflow: hidden; }
+  .palette div { height: 88px; display: flex; align-items: flex-end; padding: var(--space-sm); font-size: 11px; font-weight: 700; line-height: 13px; }
+  .lucky-line { display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--space-md); }
+  .lucky-line strong { font-size: 17px; line-height: 22px; font-weight: 600; letter-spacing: -0.2px; }
+  .lucky-line span { font-size: 12px; color: var(--text-tertiary); }
+  .profile { display: flex; flex-wrap: wrap; gap: var(--space-xs-plus); margin-top: var(--space-md); }
+  .tag {
+    display: inline-flex; align-items: center; padding: 4px 8px; border-radius: var(--radius-full);
+    font-size: 11px; font-weight: 700; line-height: 1;
+    background: var(--zinc-100); color: var(--text-secondary);
+  }
+  .tag.brand { background: var(--bg-brand-subtle); color: var(--text-brand); }
+
+  .sec { margin-top: var(--space-3xl); }
+  .sec-h { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--space-md); border-bottom: 1px solid var(--text-primary); }
+  .sec-h h3 { font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: -0.2px; }
+  .sec-h span { font-size: 12px; color: var(--text-tertiary); }
+
+  .look-row { display: grid; grid-template-columns: 76px 1fr; gap: var(--space-md); padding: var(--space-lg) 0; border-bottom: 1px solid var(--border-default); }
+  .thumb {
+    position: relative;
+    aspect-ratio: 1; border-radius: var(--radius-sm);
+    display: grid; place-items: center;
+    overflow: hidden;
+  }
+  .thumb svg.i { width: 30px; height: 30px; stroke-width: 1.25; }
+  .look-row .meta { display: flex; gap: var(--space-xs-plus); align-items: center; font-size: 11px; font-weight: 700; color: var(--text-tertiary); letter-spacing: .02em; }
+  .look-row h4 { margin: var(--space-xs) 0 0; font-size: 15px; line-height: 20px; font-weight: 600; }
+  .look-row p { margin-top: var(--space-xs); font-size: 13px; line-height: 18px; color: var(--text-secondary); }
+  .shop { display: flex; gap: var(--space-md); margin-top: var(--space-sm); }
+  .shop a { font-size: 12px; font-weight: 600; color: var(--text-primary); text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
+  .shop a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .shop a svg.i { width: 12px; height: 12px; stroke-width: 2; }
+
+  .vibe { margin-top: var(--space-lg); padding: var(--space-lg); border-radius: var(--radius-lg); background: var(--bg-inverse); color: var(--text-inverse); }
+  .vibe .eyebrow { color: var(--tight-pink-200); }
+  .vibe h4 { margin: var(--space-sm) 0 0; font-size: 20px; line-height: 26px; font-weight: 600; letter-spacing: -0.3px; }
+  .vibe p { margin-top: var(--space-xs); font-size: 13px; line-height: 18px; color: var(--zinc-300); }
+  .why { margin-top: var(--space-lg); font-size: 13px; line-height: 19px; color: var(--text-secondary); }
+  .why b { color: var(--text-primary); font-weight: 600; }
+  .result-actions { margin-top: var(--space-2xl); }
+  .link { display: block; margin: var(--space-lg) auto 0; background: none; border: 0; font-size: 13px; font-weight: 600; color: var(--text-tertiary); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- 달력 ---------- */
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); }
+  .cal-head strong { font-size: 17px; line-height: 22px; font-weight: 600; }
+  .cal-nav { width: 32px; height: 32px; border: 0; border-radius: var(--radius-sm); background: var(--zinc-100); font-size: 17px; line-height: 1; transition: background .15s ease-out; }
+  .cal-nav:hover { background: var(--zinc-200); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-xs); text-align: center; }
+  .cal-w { font-size: 12px; font-weight: 500; color: var(--text-tertiary); padding: var(--space-sm) 0; }
+  .cal-d { aspect-ratio: 1; border: 0; border-radius: var(--radius-full); background: transparent; font-size: 15px; position: relative; transition: background .15s ease-out; }
+  .cal-d i { position: absolute; left: 50%; bottom: 3px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; }
+  .cal-d:hover { background: var(--zinc-100); }
+  .cal-d.is-today { box-shadow: inset 0 0 0 1px var(--border-strong); font-weight: 600; }
+  .cal-d.is-selected { background: var(--bg-brand-primary); color: var(--text-on-brand); font-weight: 600; box-shadow: none; }
+  .cal-d:focus-visible { outline: 1px solid var(--border-focus); }
+  .cal-legend { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); font-size: 11px; color: var(--text-tertiary); }
+  .cal-legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .cal-legend i { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ---------- 다음주 추천 플로팅 ---------- */
+  .nw-fab {
+    position: fixed; right: var(--space-lg); bottom: var(--space-xl); z-index: 20;
+    height: 48px; padding: 0 var(--space-xl) 0 var(--space-lg);
+    display: none; align-items: center; gap: var(--space-sm);
+    border: 0; border-radius: var(--radius-full);
+    background: var(--bg-inverse); color: var(--text-inverse);
+    font-size: 15px; font-weight: 600;
+    box-shadow: var(--elevation-4);
+  }
+  .nw-fab .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-brand-primary); }
+  .nw-fab.show { display: inline-flex; animation: rise .2s ease-out; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+
+  .nw {
+    position: fixed; z-index: 30;
+    background: var(--bg-base);
+    display: none; flex-direction: column;
+  }
+  .nw.show { display: flex; }
+  .nw-scrim { position: fixed; inset: 0; z-index: 25; background: rgba(0,0,0,.4); display: none; }
+  .nw-scrim.show { display: block; }
+  /* 모바일: 아래에서 올라오는 시트 */
+  .nw { left: 0; right: 0; bottom: 0; max-height: 86vh; border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; animation: sheet .2s ease-out; }
+  @keyframes sheet { from { transform: translateY(24px); opacity: 0; } }
+  .nw-handle { width: 36px; height: 4px; border-radius: var(--radius-full); background: var(--zinc-300); margin: var(--space-sm) auto 0; }
+  .nw-head { display: flex; justify-content: space-between; align-items: flex-start; padding: var(--space-lg) var(--space-xl) var(--space-md); }
+  .nw-head h3 { margin-top: var(--space-xs); font-size: 20px; line-height: 26px; font-weight: 700; letter-spacing: -0.3px; }
+  .nw-close { width: 32px; height: 32px; border: 0; border-radius: var(--radius-sm); background: var(--zinc-100); display: grid; place-items: center; color: var(--icon-default); }
+  .nw-body { overflow-y: auto; padding: 0 var(--space-xl) var(--space-xl); }
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-xs); padding: var(--space-md); border-radius: var(--radius-md); background: var(--bg-surface); }
+  .week div { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-tertiary); }
+  .week b { display: block; margin: var(--space-xs-plus) auto 0; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .week small { display: block; margin-top: 4px; font-size: 10px; font-weight: 500; }
+  .nw-summary { margin: var(--space-md) 0 var(--space-lg); font-size: 13px; line-height: 18px; color: var(--text-secondary); }
+  .nw-summary b { color: var(--text-primary); }
+  .products { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg) var(--space-sm); }
+  .product .thumb { border-radius: var(--radius-sm); aspect-ratio: 4 / 3; }
+  @media (min-width: 1080px) { .product .thumb { aspect-ratio: 1; } }
+  .product .thumb .rank { position: absolute; left: 0; top: 0; padding: 4px 7px; background: var(--bg-inverse); color: var(--text-inverse); font-size: 11px; font-weight: 700; border-radius: 0 0 var(--radius-xs) 0; }
+  .product .cat { margin-top: var(--space-sm); font-size: 11px; font-weight: 700; color: var(--text-tertiary); }
+  .product h4 { margin: 2px 0 0; font-size: 13px; line-height: 18px; font-weight: 600; }
+  .product .shop { margin-top: var(--space-sm); gap: var(--space-xs); }
+  .product .shop a {
+    flex: 1; justify-content: center; height: 32px; border-radius: var(--radius-sm);
+    background: var(--zinc-100); font-size: 12px;
+  }
+  .product .shop a:hover { background: var(--zinc-200); text-decoration: none; }
+  .nw-foot { margin-top: var(--space-lg); font-size: 11px; line-height: 15px; color: var(--text-tertiary); }
+
+  /* 넓은 화면: 오른쪽에 떠 있는 패널 */
+  @media (min-width: 1080px) {
+    .nw {
+      left: auto; right: var(--space-2xl); top: 76px; bottom: auto;
+      width: 320px; max-height: calc(100vh - 100px);
+      border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+      box-shadow: var(--elevation-3);
+      animation: rise .2s ease-out;
+    }
+    .nw-handle, .nw-scrim.show { display: none; }
+  }
+
+  footer { margin: 0 0 var(--space-3xl); font-size: 11px; line-height: 13px; color: var(--text-tertiary); text-align: center; font-weight: 500; }
+  @media (prefers-reduced-motion: reduce) { .door, .panel, .nw, .nw-fab { transition: none; animation: none; } }
+</style>
+</head>
+<body>
+  <header class="app-bar">
+    <h1>FORTUNE<span>.</span>CLOSET</h1>
+    <span class="date" id="bar-date"></span>
+  </header>
+
+  <main>
+    <div class="intro">
+      <p class="eyebrow">Today's Fortune Look</p>
+      <h2>오늘 뭐 입을지<br><em>사주</em>가 정해줄게</h2>
+      <p>생년월일, 체형, 평소 스타일만 알려줘.</p>
+    </div>
+
+    <div class="closet" id="closet">
+      <div class="crown" aria-hidden="true"></div>
+      <div class="body">
+        <div class="inside">
+          <div class="rod"></div>
+
+          <!-- 사주 정보 입력 -->
+          <section class="panel" id="panel-form" aria-labelledby="form-title">
+            <div class="panel-head">
+              <p class="eyebrow">Step 1 · Profile</p>
+              <h2 id="form-title">너에 대해 알려줘</h2>
+              <p>한 번만 알려주면 다음부턴 바로 보여줄게</p>
+            </div>
+            <form id="saju-form" novalidate>
+              <p class="group-title">사주</p>
+              <div class="field">
+                <label for="name">이름 (닉네임)</label>
+                <input type="text" id="name" maxlength="12" placeholder="뭐라고 부를까?" autocomplete="nickname">
+              </div>
+              <div class="field">
+                <span class="label">성별</span>
+                <div class="seg">
+                  <input type="radio" name="gender" id="g-f" value="여성" checked><label for="g-f">여성</label>
+                  <input type="radio" name="gender" id="g-m" value="남성"><label for="g-m">남성</label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="birth">생년월일 (양력)</label>
+                <input type="date" id="birth" min="1930-01-01" max="2025-12-31" required>
+                <p class="note">음력이면 양력으로 바꿔서 넣어줘</p>
+              </div>
+              <div class="field">
+                <label for="hour">태어난 시간</label>
+                <select id="hour"></select>
+                <label class="check">시간을 몰라<input type="checkbox" id="hour-unknown"><span class="tog" aria-hidden="true"></span></label>
+              </div>
+
+              <p class="group-title">스타일</p>
+              <div class="field">
+                <span class="label">체형 <small>· 골격진단 기준</small></span>
+                <div class="body-cards" id="body-cards"></div>
+                <div class="body-detail" id="body-detail"></div>
+                <button type="button" class="quiz-open" id="quiz-open">잘 모르겠어? 4문항으로 찾아보기 →</button>
+                <div class="quiz" id="quiz" hidden></div>
+              </div>
+              <div class="field">
+                <span class="label">평소 스타일 <small>· 최대 2개</small></span>
+                <div class="chips" id="style-chips"></div>
+              </div>
+
+              <p class="error" id="error" role="alert"></p>
+              <button type="submit" class="btn">오늘 코디 보기</button>
+            </form>
+          </section>
+
+          <!-- 다른 날 보기 -->
+          <section class="panel" id="panel-cal" aria-labelledby="cal-heading">
+            <div class="panel-head">
+              <p class="eyebrow">Calendar</p>
+              <h2 id="cal-heading">언제 코디가 궁금해?</h2>
+              <p>점 색은 그날의 행운 컬러야</p>
+            </div>
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="cal-prev" aria-label="이전 달">‹</button>
+              <strong id="cal-title"></strong>
+              <button type="button" class="cal-nav" id="cal-next" aria-label="다음 달">›</button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-legend" id="cal-legend"></div>
+            <div class="btn-row"><button class="btn-sub" id="cal-back" type="button">돌아가기</button></div>
+          </section>
+
+          <!-- 추천 결과 -->
+          <section class="panel" id="panel-result" aria-labelledby="result-title">
+            <div class="panel-head">
+              <p class="eyebrow" id="result-eyebrow">Today's Look</p>
+              <h2 id="result-title"></h2>
+              <p class="date" id="result-date"></p>
+            </div>
+
+            <div class="palette" id="palette"></div>
+            <div class="lucky-line"><strong id="lucky-title"></strong><span id="lucky-el"></span></div>
+            <div class="profile" id="profile"></div>
+
+            <div class="switch-h">체형별로 보기<span>누르면 코디가 바뀌어</span></div>
+            <div class="seg" id="body-switch" role="tablist" aria-label="체형 선택"></div>
+
+            <div class="sec">
+              <div class="sec-h"><h3 id="looks-h">오늘의 코디</h3><span>3 items</span></div>
+              <div id="looks"></div>
+            </div>
+
+            <div class="vibe">
+              <p class="eyebrow">Mood</p>
+              <h4 id="vibe"></h4>
+              <p id="vibe-d"></p>
+            </div>
+            <p class="why" id="why"></p>
+
+            <div class="result-actions">
+              <button class="btn dark" id="other-day" type="button">다른 날도 보기</button>
+              <div class="btn-row">
+                <button class="btn-sub" id="back-today" type="button" hidden>오늘로 돌아가기</button>
+                <button class="btn-sub" id="open-nw" type="button">다음주 추천</button>
+              </div>
+              <button class="link" id="reset" type="button">정보 다시 입력하기</button>
+            </div>
+          </section>
+        </div>
+
+        <div class="doors" id="doors">
+          <button class="door left" aria-label="옷장 열기"></button>
+          <button class="door right" aria-label="옷장 열기"></button>
+        </div>
+      </div>
+      <div class="legs"><span></span><span></span></div>
+    </div>
+    <p class="tap-hint">옷장을 눌러서 열어봐</p>
+  </main>
+
+  <footer>재미로 보는 사주 코디 · 입력한 정보는 이 기기에만 저장돼</footer>
+
+  <!-- 다음주 추천 -->
+  <button class="nw-fab" id="nw-fab" type="button"><span class="dot"></span>다음주에 입을 옷</button>
+  <div class="nw-scrim" id="nw-scrim"></div>
+  <aside class="nw" id="nw" aria-labelledby="nw-title">
+    <div class="nw-handle"></div>
+    <div class="nw-head">
+      <div>
+        <p class="eyebrow" id="nw-range"></p>
+        <h3 id="nw-title">다음주에 입으면 좋을 옷</h3>
+      </div>
+      <button class="nw-close" id="nw-close" type="button" aria-label="닫기">
+        <svg class="i" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="nw-body">
+      <div class="week" id="week"></div>
+      <p class="nw-summary" id="nw-summary"></p>
+      <div class="products" id="products"></div>
+      <p class="nw-foot">버튼을 누르면 쿠팡·무신사 검색 결과로 이동해. 상품은 직접 비교해보고 골라줘.</p>
+    </div>
+  </aside>
+
+<script>
+(() => {
+  const STORAGE_KEY = "fortune-closet:v4";
+
+  // ---------- 사주 기초 ----------
+  const STEMS = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
+  const BRANCHES = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"];
+  const HOURS = [
+    "자시 (23:30~01:29)", "축시 (01:30~03:29)", "인시 (03:30~05:29)", "묘시 (05:30~07:29)",
+    "진시 (07:30~09:29)", "사시 (09:30~11:29)", "오시 (11:30~13:29)", "미시 (13:30~15:29)",
+    "신시 (15:30~17:29)", "유시 (17:30~19:29)", "술시 (19:30~21:29)", "해시 (21:30~23:29)"
+  ];
+  const ELEMENTS = ["목", "화", "토", "금", "수"];
+  const stemElement = (s) => Math.floor(s / 2);
+
+  function julianDay(y, m, d) {
+    const a = Math.floor((14 - m) / 12);
+    const yy = y + 4800 - a;
+    const mm = m + 12 * a - 3;
+    return d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4)
+      - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+  }
+  const jdOf = (date) => julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  function dayPillar(y, m, d) {
+    const jd = julianDay(y, m, d);
+    return { stem: (jd + 9) % 10, branch: (jd + 1) % 12 };
+  }
+
+  // ---------- 오행별 행운 컬러·무드 ----------
+  const ELEMENT_LOOK = {
+    목: { name: "숲의 기운", mark: "#8FA382", colors: [["세이지", "#9AAE8C", "#fff"], ["올리브", "#6E7550", "#fff"], ["민트", "#C5DECF", "#2f3b33"]],
+      vibes: [["싱그러운 봄 소풍", "새로운 시작에 마음이 열리는 날. 처음 가는 카페도 좋아."], ["숲속 산책 무드", "느긋하게 걸으면서 아이디어 키우기 좋은 날."]] },
+    화: { name: "꽃불의 기운", mark: "#EE7F6F", colors: [["코랄", "#EE7F6F", "#fff"], ["버건디", "#7A1F2B", "#fff"], ["로즈핑크", "#F3B3BF", "#4a2229"]],
+      vibes: [["주인공 무드", "사람들 앞에 서면 빛나는 날. 발표나 약속 잡아봐."], ["설레는 데이트", "표현하면 마음이 잘 전해지는 날."]] },
+    토: { name: "포근한 대지의 기운", mark: "#B8865B", colors: [["베이지", "#DCC8AA", "#3d3326"], ["카멜", "#B8865B", "#fff"], ["브라운", "#6E4E37", "#fff"]],
+      vibes: [["차분한 브런치", "믿음직한 사람이 되는 날. 중요한 약속에 좋아."], ["포근한 집순이 데이", "정리하고 쌓아두기 좋은 날. 무리 안 해도 돼."]] },
+    금: { name: "반짝이는 보석의 기운", mark: "#A9ADB4", colors: [["아이보리", "#EFE8DA", "#3d3a33"], ["실버그레이", "#BFC2C7", "#2a2c30"], ["화이트", "#F7F6F2", "#3d3a33"]],
+      vibes: [["우아한 갤러리 무드", "똑 부러지게 결정하기 좋은 날. 미뤄둔 일 정리해봐."], ["반짝이는 저녁 약속", "아름다운 걸 보면서 기준 세우기 좋은 날."]] },
+    수: { name: "맑은 물결의 기운", mark: "#27324A", colors: [["네이비", "#27324A", "#fff"], ["블랙", "#1F1F22", "#fff"], ["스카이블루", "#AFC8E2", "#22303f"]],
+      vibes: [["새벽 바다 무드", "직감이 좋아지는 날. 떠오르는 생각은 메모해둬."], ["조용한 북카페", "혼자만의 시간에서 지혜가 생기는 날."]] }
+  };
+
+  // ---------- 체형 × 스타일 아이템 ----------
+  const STYLES = ["미니멀", "캐주얼", "페미닌", "클래식", "스트릿"];
+  const BODY = {
+    straight: {
+      label: "스트레이트", shape: "I라인 · 입체형",
+      traits: ["상체에 볼륨이 있고 몸에 두께감이 있어", "살이 탄력 있고 단단한 편", "쇄골이 잘 안 보이고 어깨가 둥근 편"],
+      good: ["V넥", "정석 핏 셔츠", "일자 슬랙스", "매끈한 소재"], avoid: ["과한 프릴", "오버핏 롱 기장", "두꺼운 니트"],
+      sil: '<circle cx="30" cy="10" r="6"/><path d="M27 16v4M33 16v4M27 20q-10 1-10 7l1 17q2 7 2 13l-1 13 3 42M33 20q10 1 10 7l-1 17q-2 7-2 13l1 13-3 42M21 33q9 6 18 0"/>',
+      desc: "<b>상체에 볼륨, 탄탄한 느낌.</b> 쇄골 아래가 입체적이고 몸에 두께감이 있어. 정석 핏·매끈한 소재가 잘 어울려.",
+      tips: { top: "목선이 트인 정석 핏이 상체를 깔끔하게 정리해줘.", bottom: "군더더기 없는 일자 라인이 입체감을 살려줘.", acc: "심플하고 정돈된 포인트가 너한테 제일 세련돼 보여." },
+      items: {
+        top: [["하이게이지 브이넥 니트", ["미니멀", "클래식"]], ["베이직 옥스퍼드 셔츠", ["클래식", "캐주얼", "미니멀"]], ["탄탄한 크루넥 티셔츠", ["캐주얼", "스트릿"]], ["테일러드 싱글 재킷", ["클래식", "미니멀"]], ["실크 셔츠 블라우스", ["페미닌", "클래식"]]],
+        bottom: [["스트레이트 슬랙스", ["미니멀", "클래식"]], ["생지 스트레이트 데님", ["캐주얼", "스트릿"]], ["펜슬 스커트", ["페미닌", "클래식"]], ["세미와이드 치노 팬츠", ["캐주얼", "미니멀"]], ["카고 스트레이트 팬츠", ["스트릿"]]],
+        acc: [["심플 체인 목걸이", ["미니멀", "페미닌", "클래식"]], ["가죽 페니 로퍼", ["클래식", "미니멀"]], ["스퀘어 가죽 토트백", ["클래식", "미니멀"]], ["로고 볼캡", ["스트릿", "캐주얼"]], ["메탈 브레이슬릿 시계", ["캐주얼", "미니멀", "페미닌"]]]
+      }
+    },
+    wave: {
+      label: "웨이브", shape: "X라인 · 곡선형",
+      traits: ["상체가 얇고 하체에 볼륨이 있어", "살결이 부드럽고 말랑한 편", "허리가 잘록하고 어깨가 좁은 편"],
+      good: ["짧은 상의", "하이웨이스트", "플레어 스커트", "부드러운 소재"], avoid: ["박시한 오버핏", "로우라이즈", "뻣뻣한 소재"],
+      sil: '<circle cx="30" cy="10" r="6"/><path d="M28 16v4M32 16v4M28 20q-7 1-8 6l1 12q3 7 2 12-8 9-7 20l6 42M32 20q7 1 8 6l-1 12q-3 7-2 12 8 9 7 20l-6 42"/>',
+      desc: "<b>하체에 볼륨, 부드러운 곡선.</b> 상체가 얇고 허리가 잘록한 편이야. 짧은 상의·하이웨이스트·부드러운 소재가 잘 어울려.",
+      tips: { top: "짧고 부드러운 상의가 시선을 위로 끌어올려줘.", bottom: "허리선을 높이면 곡선이 예쁘게 살아나.", acc: "작고 섬세한 디테일이 부드러운 분위기와 잘 맞아." },
+      items: {
+        top: [["숏 기장 리브 가디건", ["페미닌", "캐주얼"]], ["퍼프 소매 블라우스", ["페미닌"]], ["보트넥 슬림 니트", ["미니멀", "클래식"]], ["크롭 후드 집업", ["스트릿", "캐주얼"]], ["앙고라 크롭 니트", ["페미닌", "캐주얼"]]],
+        bottom: [["하이웨이스트 플레어 스커트", ["페미닌", "클래식"]], ["하이웨이스트 부츠컷 데님", ["캐주얼", "스트릿"]], ["머메이드 미디 스커트", ["페미닌"]], ["하이웨이스트 와이드 슬랙스", ["미니멀", "클래식"]], ["나일론 파라슈트 팬츠", ["스트릿"]]],
+        acc: [["진주 드롭 귀걸이", ["페미닌", "클래식"]], ["얇은 가죽 벨트", ["미니멀", "클래식", "페미닌"]], ["미니 숄더백", ["페미닌", "캐주얼"]], ["메리제인 슈즈", ["페미닌", "캐주얼"]], ["새틴 헤어 리본", ["페미닌", "스트릿"]]]
+      }
+    },
+    natural: {
+      label: "내추럴", shape: "H라인 · 골격형",
+      traits: ["어깨·손목·무릎 뼈대가 또렷해", "살보다 골격과 근육 결이 느껴져", "프레임이 크고 직선적인 편"],
+      good: ["오버핏", "롱 기장", "린넨·코듀로이", "와이드 팬츠"], avoid: ["몸에 붙는 핏", "짧은 크롭", "하늘거리는 소재"],
+      sil: '<circle cx="30" cy="10" r="6"/><path d="M27 16v3M33 16v3M27 19l-13 2v10l4 15v24l4 42M33 19l13 2v10l-4 15v24l-4 42M18 24l12 2 12-2"/>',
+      desc: "<b>골격 프레임이 또렷함.</b> 어깨·손목·무릎 뼈대가 느껴지는 편이야. 오버핏·롱 기장·거친 소재가 잘 어울려.",
+      tips: { top: "여유 있는 오버핏이 골격을 멋스럽게 보여줘.", bottom: "길고 넉넉한 기장이 자연스러운 분위기를 살려줘.", acc: "크고 존재감 있는 소품이 프레임과 균형을 맞춰줘." },
+      items: {
+        top: [["오버핏 코튼 셔츠", ["캐주얼", "미니멀"]], ["로우게이지 케이블 니트", ["캐주얼", "클래식"]], ["오버핏 맨투맨", ["스트릿", "캐주얼"]], ["린넨 셔츠 재킷", ["미니멀", "클래식"]], ["드롭숄더 블라우스", ["페미닌"]]],
+        bottom: [["와이드 데님 팬츠", ["캐주얼", "스트릿"]], ["롱 플리츠 스커트", ["페미닌", "클래식"]], ["코듀로이 와이드 팬츠", ["캐주얼", "미니멀"]], ["카고 와이드 팬츠", ["스트릿"]], ["맥시 슬립 스커트", ["페미닌", "미니멀"]]],
+        acc: [["볼드 실버 링", ["미니멀", "스트릿"]], ["캔버스 빅 토트백", ["캐주얼", "미니멀"]], ["버킷햇", ["스트릿", "캐주얼"]], ["울 롱 스카프", ["페미닌", "클래식"]], ["레더 첼시 부츠", ["클래식", "미니멀"]]]
+      }
+    }
+  };
+  BODY.unknown = {
+    label: "체형 미입력", shape: "",
+    desc: "<b>잘 모르겠으면 괜찮아.</b> 세 체형에서 두루 무난한 아이템으로 골라줄게. 체형을 알면 훨씬 정확해져.",
+    tips: { top: "체형을 알려주면 핏까지 맞춰서 골라줄게.", bottom: "체형을 알려주면 기장과 허리선까지 맞춰줄게.", acc: "부담 없이 더하기 좋은 포인트야." },
+    items: {
+      top: [...BODY.straight.items.top, ...BODY.wave.items.top, ...BODY.natural.items.top],
+      bottom: [...BODY.straight.items.bottom, ...BODY.wave.items.bottom, ...BODY.natural.items.bottom],
+      acc: [...BODY.straight.items.acc, ...BODY.wave.items.acc, ...BODY.natural.items.acc]
+    }
+  };
+  const CATS = [["top", "상의"], ["bottom", "하의"], ["acc", "장신구"]];
+  const ICONS = {
+    top: '<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>',
+    bottom: '<path d="M7 2h10l1 20h-4.5L12 9l-1.5 13H6z"/>',
+    acc: '<circle cx="12" cy="15" r="6"/><path d="m9 4 3 5 3-5-3-2z"/>'
+  };
+  const EXT = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+  const icon = (k) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>`;
+
+  // ---------- 추천 로직 ----------
+  // 행운 오행 규칙 (1주차 리서치 전 임시 규칙)
+  // - 오늘 기운이 나를 누르면(극) → 나를 생해주는 오행으로 보호
+  // - 오늘 기운이 나와 같아 넘치면 → 내가 생해주는 오행으로 흘려보내기
+  // - 그 외 → 나를 생해주는 오행으로 힘 보태기
+  function luckyFor(info, date) {
+    const [by, bm, bd] = info.birth.split("-").map(Number);
+    const mine = dayPillar(by, bm, bd);
+    const myEl = stemElement(mine.stem);
+    const t = dayPillar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+    const dayEl = stemElement(t.stem);
+    const helper = (myEl + 4) % 5;
+    const outlet = (myEl + 1) % 5;
+    let luckyEl, reason;
+    if ((dayEl + 2) % 5 === myEl) {
+      luckyEl = helper;
+      reason = `${ELEMENTS[dayEl]}의 기운이 너의 ${ELEMENTS[myEl]}을(를) 누르는 날이라, 너를 북돋아주는 <b>${ELEMENTS[helper]}</b>의 색으로 지켜줘.`;
+    } else if (dayEl === myEl) {
+      luckyEl = outlet;
+      reason = `너와 같은 ${ELEMENTS[myEl]}의 기운이 넘치는 날이라, <b>${ELEMENTS[outlet]}</b>의 색으로 기운을 자연스럽게 흘려보내.`;
+    } else {
+      luckyEl = helper;
+      reason = `${ELEMENTS[dayEl]}의 기운이 흐르는 날. 너의 ${ELEMENTS[myEl]}에 힘을 보태주는 <b>${ELEMENTS[helper]}</b>의 색이 행운을 불러.`;
+    }
+    return { mine, myEl, t, luckyEl, reason };
+  }
+
+  const pick = (list, seed) => list[((seed % list.length) + list.length) % list.length];
+
+  // 스타일이 맞는 아이템을 먼저 고르고, 없으면 전체에서 골라요
+  function pickItem(info, cat, seed) {
+    const list = BODY[info.body].items[cat];
+    const matched = info.styles.length ? list.filter(([, tags]) => tags.some((t) => info.styles.includes(t))) : list;
+    return pick(matched.length ? matched : list, seed);
+  }
+
+  function outfit(info, luckyEl, seed) {
+    const look = ELEMENT_LOOK[ELEMENTS[luckyEl]];
+    return CATS.map(([cat, label], i) => {
+      const [item] = pickItem(info, cat, seed + i * 7);
+      const color = pick(look.colors, seed + i);
+      return { cat, label, color, name: `${color[0]} ${item}`, query: `${color[0]} ${item}`, tip: BODY[info.body].tips[cat] };
+    });
+  }
+
+  function recommend(info, date) {
+    const L = luckyFor(info, date);
+    const look = ELEMENT_LOOK[ELEMENTS[L.luckyEl]];
+    const hourSeed = info.hour === "" ? 0 : Number(info.hour);
+    const seed = jdOf(date) + L.mine.stem + hourSeed;
+    return {
+      ...L, look,
+      myPillar: `${STEMS[L.mine.stem]}${BRANCHES[L.mine.branch]}`,
+      dayPillar: `${STEMS[L.t.stem]}${BRANCHES[L.t.branch]}`,
+      items: outfit(info, L.luckyEl, seed),
+      vibe: pick(look.vibes, seed)
+    };
+  }
+
+  // ---------- 쇼핑 링크 (검색 결과로 연결) ----------
+  const coupang = (q) => `https://www.coupang.com/np/search?q=${encodeURIComponent(q)}`;
+  const musinsa = (q) => `https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(q)}`;
+  const shopLinks = (q) =>
+    `<a href="${coupang(q)}" target="_blank" rel="noopener">쿠팡${EXT}</a><a href="${musinsa(q)}" target="_blank" rel="noopener">무신사${EXT}</a>`;
+
+  // ---------- 저장 ----------
+  function load() {
+    try {
+      const v = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      return v && v.birth ? v : null;
+    } catch { return null; }
+  }
+  function save(info) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(info)); } catch {} }
+  function clear() { try { localStorage.removeItem(STORAGE_KEY); } catch {} }
+
+  // ---------- 화면 ----------
+  const $ = (id) => document.getElementById(id);
+  const closet = $("closet");
+  const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  const WEEK = ["일", "월", "화", "수", "목", "금", "토"];
+  const md = (d) => `${d.getMonth() + 1}월 ${d.getDate()}일`;
+
+  const now = new Date();
+  $("bar-date").textContent = `${md(now)} ${WEEK[now.getDay()]}요일`;
+
+  $("hour").innerHTML = HOURS.map((h, i) => `<option value="${i}">${h}</option>`).join("");
+  $("hour").value = "6";
+  $("hour-unknown").addEventListener("change", (e) => { $("hour").disabled = e.target.checked; });
+
+  $("style-chips").innerHTML = STYLES.map((s, i) =>
+    `<input type="checkbox" name="style" id="st-${i}" value="${s}"><label for="st-${i}">${s}</label>`).join("");
+  $("style-chips").addEventListener("change", (e) => {
+    const checked = [...document.querySelectorAll('input[name="style"]:checked')];
+    if (checked.length > 2) e.target.checked = false;
+  });
+
+  const BODY_KEYS = ["straight", "wave", "natural"];
+  const selectedBody = () => document.querySelector('input[name="body"]:checked')?.value || "unknown";
+  const tags = (list) => list.map((t) => `<span class="tag">${t}</span>`).join("");
+
+  $("body-cards").innerHTML = BODY_KEYS.map((k) => `
+    <input type="radio" name="body" id="b-${k}" value="${k}">
+    <label for="b-${k}" class="body-card">
+      <svg class="sil" viewBox="0 0 60 116" aria-hidden="true">${BODY[k].sil}</svg>
+      <strong>${BODY[k].label}</strong><span>${BODY[k].shape}</span>
+    </label>`).join("");
+
+  function updateBodyDetail() {
+    const k = selectedBody();
+    if (k === "unknown") {
+      $("body-detail").innerHTML = "체형을 고르면 특징이랑 잘 어울리는 옷을 알려줄게. <b>안 골라도 괜찮아</b> — 두루 무난한 아이템으로 골라줄게.";
+      return;
+    }
+    const b = BODY[k];
+    $("body-detail").innerHTML = `
+      <b>${b.label} · ${b.shape}</b>
+      <ul>${b.traits.map((t) => `<li>${t}</li>`).join("")}</ul>
+      <div class="kw"><em>잘 어울려</em>${tags(b.good)}</div>
+      <div class="kw"><em>피하면 좋아</em>${tags(b.avoid)}</div>`;
+  }
+  $("body-cards").addEventListener("change", updateBodyDetail);
+  function setBody(k) {
+    const input = document.querySelector(`input[name="body"][value="${k}"]`);
+    document.querySelectorAll('input[name="body"]').forEach((i) => { i.checked = i === input; });
+    updateBodyDetail();
+  }
+  updateBodyDetail();
+
+  // 체형 찾기 테스트 (답 순서는 문항마다 섞어요)
+  const QUIZ = [
+    ["살이 찌면 어디부터 붙어?", [["가슴·팔 위쪽 등 상체부터", "straight"], ["엉덩이·허벅지 등 하체부터", "wave"], ["전체적으로 고르게, 뼈대는 그대로", "natural"]]],
+    ["팔뚝이나 허벅지 살을 잡아보면?", [["탄력 있고 단단한 느낌", "straight"], ["부드럽고 말랑한 느낌", "wave"], ["살보다 뼈·근육 결이 먼저 느껴져", "natural"]]],
+    ["쇄골과 어깨는 어때?", [["쇄골이 잘 안 보이고 어깨가 둥근 편", "straight"], ["쇄골이 가늘게 보이고 어깨가 좁고 얇은 편", "wave"], ["쇄골·어깨뼈가 크고 도드라지는 편", "natural"]]],
+    ["입었을 때 제일 칭찬받은 옷은?", [["몸에 맞는 셔츠·정장 같은 정석 핏", "straight"], ["짧은 니트·플레어 스커트", "wave"], ["오버핏 셔츠·루즈한 니트", "natural"]]]
+  ];
+  let quizStep = 0, quizAnswers = [];
+  function renderQuiz() {
+    const quiz = $("quiz");
+    if (quizStep < QUIZ.length) {
+      const [q, opts] = QUIZ[quizStep];
+      const rotated = opts.map((_, i) => opts[(i + quizStep) % opts.length]);
+      quiz.innerHTML = `
+        <div class="bar"><i style="width:${(quizStep / QUIZ.length) * 100}%"></i></div>
+        <p class="q-step">Q${quizStep + 1} / ${QUIZ.length}</p>
+        <h5>${q}</h5>
+        ${rotated.map(([t, k]) => `<button type="button" class="opt" data-k="${k}">${t}</button>`).join("")}`;
+      return;
+    }
+    const count = {};
+    quizAnswers.forEach((k) => { count[k] = (count[k] || 0) + 1; });
+    const best = Math.max(...Object.values(count));
+    const result = quizAnswers.find((k) => count[k] === best);   // 동점이면 먼저 고른 쪽
+    setBody(result);
+    quiz.innerHTML = `
+      <div class="bar"><i style="width:100%"></i></div>
+      <p class="q-result">너는 <b>${BODY[result].label}</b>에 가까워! 위에서 골라뒀어.</p>
+      <div class="q-actions"><button type="button" id="quiz-retry">다시 하기</button><button type="button" id="quiz-close">닫기</button></div>`;
+  }
+  $("quiz-open").addEventListener("click", () => {
+    quizStep = 0; quizAnswers = [];
+    $("quiz").hidden = false;
+    renderQuiz();
+  });
+  $("quiz").addEventListener("click", (e) => {
+    const opt = e.target.closest(".opt");
+    if (opt) { quizAnswers.push(opt.dataset.k); quizStep++; renderQuiz(); return; }
+    if (e.target.id === "quiz-retry") { quizStep = 0; quizAnswers = []; renderQuiz(); }
+    if (e.target.id === "quiz-close") { $("quiz").hidden = true; }
+  });
+
+  function show(panel) {
+    document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === panel));
+  }
+  function scrollToCloset() {
+    window.scrollTo({ top: closet.getBoundingClientRect().top + window.scrollY - 68, behavior: "smooth" });
+  }
+
+  let currentInfo = null;
+  let viewDate = new Date();
+
+  function renderResult(info, date = new Date()) {
+    currentInfo = info;
+    viewDate = date;
+    const isToday = sameDay(date, new Date());
+    const r = recommend(info, date);
+    const name = info.name || "너";
+    $("result-eyebrow").textContent = isToday ? "Today's Look" : `Look of ${date.getMonth() + 1}.${date.getDate()}`;
+    $("result-title").textContent = isToday ? `${name}, 오늘은 이렇게 입어` : `${name}, ${md(date)}엔 이렇게 입어`;
+    $("result-date").textContent = `${md(date)} ${r.dayPillar}일 · 나의 일주 ${r.myPillar} (${ELEMENTS[r.myEl]})`;
+    $("palette").innerHTML = r.look.colors.map(([n, hex, fg]) =>
+      `<div style="background:${hex};color:${fg}">${n}</div>`).join("");
+    $("lucky-title").textContent = r.look.name;
+    $("lucky-el").textContent = `${isToday ? "오늘" : "이날"}의 행운 오행 · ${ELEMENTS[r.luckyEl]}`;
+    $("profile").innerHTML = [`<span class="tag brand">${BODY[info.body].label}</span>`,
+      ...info.styles.map((s) => `<span class="tag">${s}</span>`)].join("");
+    $("body-switch").innerHTML = BODY_KEYS.map((k) =>
+      `<button type="button" role="tab" data-body="${k}" aria-selected="${info.body === k}">${BODY[k].label}</button>`).join("");
+    $("looks-h").textContent = isToday ? "오늘의 코디" : `${md(date)} 코디`;
+    $("looks").innerHTML = r.items.map((it) => `
+      <article class="look-row">
+        <div class="thumb" style="background:${it.color[1]};color:${it.color[2]}">${icon(it.cat)}</div>
+        <div>
+          <p class="meta">${it.label} · ${it.color[0]}</p>
+          <h4>${it.name}</h4>
+          <p>${it.tip}</p>
+          <div class="shop">${shopLinks(it.query)}</div>
+        </div>
+      </article>`).join("");
+    $("vibe").textContent = r.vibe[0];
+    $("vibe-d").textContent = r.vibe[1];
+    $("why").innerHTML = `${isToday ? "오늘은" : "이날은"} ${r.reason}`;
+    $("back-today").hidden = isToday;
+    show("panel-result");
+    renderNextWeek(info);
+    $("nw-fab").classList.add("show");
+  }
+
+  $("body-switch").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-body]");
+    if (!btn || !currentInfo) return;
+    currentInfo = { ...currentInfo, body: btn.dataset.body };
+    save(currentInfo);
+    renderResult(currentInfo, viewDate);
+  });
+
+  // ---------- 다음주 추천 ----------
+  function nextWeekDays() {
+    const d = new Date();
+    const toMon = ((8 - d.getDay()) % 7) || 7;     // 다음주 월요일
+    const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() + toMon);
+    return Array.from({ length: 7 }, (_, i) => new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i));
+  }
+  function renderNextWeek(info) {
+    const days = nextWeekDays();
+    const lucks = days.map((d) => luckyFor(info, d).luckyEl);
+    $("nw-range").textContent = `Next Week · ${md(days[0])} – ${md(days[6])}`;
+    $("week").innerHTML = days.map((d, i) => {
+      const el = ELEMENT_LOOK[ELEMENTS[lucks[i]]];
+      return `<div>${WEEK[d.getDay()]}<b style="background:${el.mark}"></b><small>${ELEMENTS[lucks[i]]}</small></div>`;
+    }).join("");
+    // 가장 많이 나온 행운 오행 기준으로 상품 4개
+    const count = {};
+    lucks.forEach((e) => { count[e] = (count[e] || 0) + 1; });
+    const top = Number(Object.keys(count).sort((a, b) => count[b] - count[a])[0]);
+    const look = ELEMENT_LOOK[ELEMENTS[top]];
+    const seed = jdOf(days[0]);
+    const items = [...outfit(info, top, seed), ...outfit(info, top, seed + 3).slice(0, 1)];
+    $("nw-summary").innerHTML = `다음주는 7일 중 <b>${count[top]}일</b>이 <b>${ELEMENTS[top]}(${look.name})</b>의 날이야. ${look.colors.map((c) => c[0]).join("·")} 컬러를 하나 장만해두면 일주일이 든든해.`;
+    $("products").innerHTML = items.map((it, i) => `
+      <article class="product">
+        <div class="thumb" style="background:${it.color[1]};color:${it.color[2]}"><span class="rank">${i + 1}</span>${icon(it.cat)}</div>
+        <p class="cat">${it.label} · ${it.color[0]}</p>
+        <h4>${it.name}</h4>
+        <div class="shop">${shopLinks(it.query)}</div>
+      </article>`).join("");
+  }
+  const desktop = () => window.matchMedia("(min-width: 1080px)").matches;
+  function openNw() {
+    $("nw").classList.add("show");
+    $("nw-scrim").classList.toggle("show", !desktop());
+    $("nw-fab").classList.remove("show");
+  }
+  function closeNw() {
+    $("nw").classList.remove("show");
+    $("nw-scrim").classList.remove("show");
+    if (currentInfo) $("nw-fab").classList.add("show");
+  }
+  $("nw-fab").addEventListener("click", openNw);
+  $("open-nw").addEventListener("click", openNw);
+  $("nw-close").addEventListener("click", closeNw);
+  $("nw-scrim").addEventListener("click", closeNw);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeNw(); });
+
+  // ---------- 다른 날 보기 (달력) ----------
+  let calMonth = new Date();
+  function renderCalendar() {
+    const y = calMonth.getFullYear();
+    const m = calMonth.getMonth();
+    $("cal-title").textContent = `${y}년 ${m + 1}월`;
+    const firstDay = new Date(y, m, 1).getDay();
+    const lastDate = new Date(y, m + 1, 0).getDate();
+    const today = new Date();
+    let html = WEEK.map((w) => `<span class="cal-w">${w}</span>`).join("");
+    for (let i = 0; i < firstDay; i++) html += "<span></span>";
+    for (let d = 1; d <= lastDate; d++) {
+      const day = new Date(y, m, d);
+      const el = ELEMENT_LOOK[ELEMENTS[luckyFor(currentInfo, day).luckyEl]];
+      const cls = ["cal-d", sameDay(day, today) && "is-today", sameDay(day, viewDate) && "is-selected"].filter(Boolean).join(" ");
+      html += `<button type="button" class="${cls}" data-day="${d}" aria-label="${m + 1}월 ${d}일">${d}<i style="background:${el.mark}"></i></button>`;
+    }
+    $("cal-grid").innerHTML = html;
+    $("cal-legend").innerHTML = ELEMENTS.map((e) =>
+      `<span><i style="background:${ELEMENT_LOOK[e].mark}"></i>${e}</span>`).join("");
+  }
+  $("other-day").addEventListener("click", () => {
+    calMonth = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    renderCalendar();
+    show("panel-cal");
+    scrollToCloset();
+  });
+  $("cal-prev").addEventListener("click", () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1); renderCalendar(); });
+  $("cal-next").addEventListener("click", () => { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1); renderCalendar(); });
+  $("cal-grid").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-day]");
+    if (!btn || !currentInfo) return;
+    renderResult(currentInfo, new Date(calMonth.getFullYear(), calMonth.getMonth(), Number(btn.dataset.day)));
+    scrollToCloset();
+  });
+  $("cal-back").addEventListener("click", () => show("panel-result"));
+  $("back-today").addEventListener("click", () => { renderResult(currentInfo, new Date()); scrollToCloset(); });
+
+  // ---------- 옷장 열기 · 입력 ----------
+  function openCloset() {
+    if (closet.classList.contains("open")) return;
+    const saved = load();
+    if (saved) renderResult(saved); else show("panel-form");
+    closet.classList.add("open");
+    setTimeout(() => closet.classList.add("settled"), 1100);
+  }
+  $("doors").addEventListener("click", openCloset);
+
+  $("saju-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const birth = $("birth").value;
+    if (!birth) { $("error").textContent = "생년월일은 꼭 알려줘"; return; }
+    $("error").textContent = "";
+    const info = {
+      name: $("name").value.trim(),
+      gender: document.querySelector('input[name="gender"]:checked').value,
+      birth,
+      hour: $("hour-unknown").checked ? "" : $("hour").value,
+      body: selectedBody(),
+      styles: [...document.querySelectorAll('input[name="style"]:checked')].map((i) => i.value)
+    };
+    save(info);
+    renderResult(info);
+    scrollToCloset();
+  });
+
+  $("reset").addEventListener("click", () => {
+    const saved = currentInfo || load();
+    if (saved) {
+      $("name").value = saved.name;
+      $("birth").value = saved.birth;
+      document.querySelector(`input[name="gender"][value="${saved.gender}"]`).checked = true;
+      setBody(saved.body);
+      document.querySelectorAll('input[name="style"]').forEach((i) => { i.checked = saved.styles.includes(i.value); });
+      $("hour-unknown").checked = saved.hour === "";
+      $("hour").disabled = saved.hour === "";
+      if (saved.hour !== "") $("hour").value = saved.hour;
+    }
+    clear();
+    currentInfo = null;
+    closeNw();
+    $("nw-fab").classList.remove("show");
+    show("panel-form");
+    scrollToCloset();
+  });
+})();
+</script>
+</body>
+</html>
