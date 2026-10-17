@@ -172,7 +172,7 @@
   .group-title { font-size: 13px; font-weight: 700; color: var(--text-primary); padding-top: var(--space-lg); border-top: 1px solid var(--border-default); }
   .group-title:first-child { border-top: 0; padding-top: 0; }
   .field label, .field .label { display: block; font-size: 13px; line-height: 18px; font-weight: 600; color: var(--text-secondary); margin-bottom: var(--space-sm); }
-  .field .label small { font-weight: 500; color: var(--text-tertiary); }
+  .field label small, .field .label small { font-weight: 500; color: var(--text-tertiary); }
   input[type="text"], input[type="date"], select {
     width: 100%; height: 44px; padding: 0 var(--space-md);
     border: 1px solid var(--border-default); border-radius: var(--radius-sm);
@@ -269,6 +269,9 @@
   .check input:checked + .tog { background: var(--bg-brand-primary); }
   .check input:checked + .tog::after { left: 22px; }
   .check input:focus-visible + .tog { outline: 1px solid var(--border-focus); outline-offset: 2px; }
+  .mall-row { display: grid; grid-template-columns: 120px 1fr; gap: var(--space-sm); }
+  #mall-check:empty { display: none; }
+  #mall-check.ok { color: var(--text-primary); }
   .note { font-size: 12px; line-height: 15px; color: var(--text-tertiary); margin-top: var(--space-xs); }
   .error { color: var(--text-error); font-size: 12px; min-height: 15px; }
 
@@ -482,6 +485,15 @@
               <div class="field">
                 <span class="label">평소 스타일 <small>· 최대 2개</small></span>
                 <div class="chips" id="style-chips"></div>
+              </div>
+              <div class="field">
+                <label for="mall-url">평소 쓰는 쇼핑몰 <small>· 선택</small></label>
+                <div class="mall-row">
+                  <input type="text" id="mall-name" maxlength="10" placeholder="이름 (예: 29CM)" aria-label="쇼핑몰 이름">
+                  <input type="text" id="mall-url" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="쇼핑몰 링크를 붙여넣어줘">
+                </div>
+                <p class="note">그 쇼핑몰에서 아무거나 검색한 뒤 주소창 링크를 붙여넣으면 거기서 바로 찾아줘. 메인 주소만 넣어도 돼.</p>
+                <p class="note" id="mall-check"></p>
               </div>
 
               <p class="error" id="error" role="alert"></p>
@@ -744,8 +756,36 @@
   // ---------- 쇼핑 링크 (검색 결과로 연결) ----------
   const coupang = (q) => `https://www.coupang.com/np/search?q=${encodeURIComponent(q)}`;
   const musinsa = (q) => `https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(q)}`;
-  const shopLinks = (q) =>
-    `<a href="${coupang(q)}" target="_blank" rel="noopener">쿠팡${EXT}</a><a href="${musinsa(q)}" target="_blank" rel="noopener">무신사${EXT}</a>`;
+  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // 평소 쓰는 쇼핑몰: 사용자가 붙여넣은 링크를 분석해서, 검색 링크면 검색어만 바꿔 끼우고
+  // 메인 주소면 구글에서 그 쇼핑몰 안만 검색해요.
+  const SEARCH_KEYS = ["q", "query", "keyword", "keywords", "kwd", "search", "searchword", "searchkeyword", "searchterm", "search_query", "word", "text", "sw", "k"];
+  function parseMall(raw) {
+    raw = (raw || "").trim();
+    if (!raw) return null;
+    let u;
+    try { u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`); } catch { return null; }
+    if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) return null;
+    const key = [...u.searchParams.keys()].find((k) => SEARCH_KEYS.includes(k.toLowerCase()));
+    return { href: u.href, host: u.hostname.replace(/^(www|m)\./, ""), key: key || "" };
+  }
+  function mallSearch(mall, q) {
+    const p = parseMall(mall.url);
+    if (!p) return "";
+    if (p.key) {
+      const u = new URL(p.href);
+      u.searchParams.set(p.key, q);
+      return u.href;
+    }
+    return `https://www.google.com/search?q=${encodeURIComponent(`site:${p.host} ${q}`)}`;
+  }
+  let myMall = null;
+  const shopLink = (href, label) => `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(label)}${EXT}</a>`;
+  const shopLinks = (q) => {
+    const mine = myMall && mallSearch(myMall, q);
+    return shopLink(coupang(q), "쿠팡") + shopLink(musinsa(q), "무신사") + (mine ? shopLink(mine, myMall.name) : "");
+  };
 
   // ---------- 저장 ----------
   function load() {
@@ -864,6 +904,7 @@
 
   function renderResult(info, date = new Date()) {
     currentInfo = info;
+    myMall = info.mall || null;
     viewDate = date;
     const isToday = sameDay(date, new Date());
     const r = recommend(info, date);
@@ -993,6 +1034,27 @@
   $("cal-back").addEventListener("click", () => show("panel-result"));
   $("back-today").addEventListener("click", () => { renderResult(currentInfo, new Date()); scrollToCloset(); });
 
+  // ---------- 평소 쓰는 쇼핑몰 입력 ----------
+  function readMall() {
+    const url = $("mall-url").value.trim();
+    const p = parseMall(url);
+    if (!p) return null;
+    return { name: $("mall-name").value.trim() || p.host.split(".")[0], url };
+  }
+  function checkMall() {
+    const el = $("mall-check");
+    const url = $("mall-url").value.trim();
+    el.className = "note";
+    if (!url) { el.textContent = ""; return; }
+    const p = parseMall(url);
+    if (!p) { el.textContent = "링크 모양이 아니야. 예: 29cm.co.kr"; return; }
+    el.classList.add("ok");
+    el.textContent = p.key
+      ? `✓ ${p.host}에서 바로 검색할게`
+      : `✓ ${p.host} 안에서 구글로 찾아줄게 (검색 결과 링크를 넣으면 쇼핑몰에서 바로 검색돼)`;
+  }
+  $("mall-url").addEventListener("input", checkMall);
+
   // ---------- 옷장 열기 · 입력 ----------
   function openCloset() {
     if (closet.classList.contains("open")) return;
@@ -1007,6 +1069,7 @@
     e.preventDefault();
     const birth = $("birth").value;
     if (!birth) { $("error").textContent = "생년월일은 꼭 알려줘"; return; }
+    if ($("mall-url").value.trim() && !parseMall($("mall-url").value)) { $("error").textContent = "쇼핑몰 링크를 다시 확인해줘"; return; }
     $("error").textContent = "";
     const info = {
       name: $("name").value.trim(),
@@ -1014,7 +1077,8 @@
       birth,
       hour: $("hour-unknown").checked ? "" : $("hour").value,
       body: selectedBody(),
-      styles: [...document.querySelectorAll('input[name="style"]:checked')].map((i) => i.value)
+      styles: [...document.querySelectorAll('input[name="style"]:checked')].map((i) => i.value),
+      mall: readMall()
     };
     save(info);
     renderResult(info);
@@ -1032,6 +1096,9 @@
       $("hour-unknown").checked = saved.hour === "";
       $("hour").disabled = saved.hour === "";
       if (saved.hour !== "") $("hour").value = saved.hour;
+      $("mall-name").value = saved.mall?.name || "";
+      $("mall-url").value = saved.mall?.url || "";
+      checkMall();
     }
     clear();
     currentInfo = null;
