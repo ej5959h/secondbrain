@@ -48,7 +48,7 @@
 <body>
   <header>
     <h1>포춘옷장 버전 비교</h1>
-    <p>네 화면 모두 휴대폰 크기(390×844)예요. v1~v3는 하나에 사주를 입력하면 새로고침 후 같은 정보로 보여요. v4는 체형·스타일을 따로 입력해요.</p>
+    <p>다섯 화면 모두 휴대폰 크기(390×844)예요. v1~v3는 하나에 사주를 입력하면 새로고침 후 같은 정보로 보여요. v4·v5는 체형·스타일을 따로 입력해요 (v5는 v4 정보를 이어 써요).</p>
     <button type="button" id="reload">모두 새로고침</button>
     <button type="button" id="reset">입력한 사주 지우기</button>
   </header>
@@ -69,6 +69,10 @@
       <figcaption><strong>v4 · 커머스 + 체형</strong><a href="index-v4-commerce.html" target="_blank">따로 열기</a></figcaption>
       <iframe src="index-v4-commerce.html" title="v4 커머스"></iframe>
     </figure>
+    <figure>
+      <figcaption><strong>v5 · 입혀보기 + 일기</strong><a href="index-v5-tryon.html" target="_blank">따로 열기</a></figcaption>
+      <iframe src="index-v5-tryon.html" title="v5 입혀보기"></iframe>
+    </figure>
   </div>
 <script>
   const frames = () => document.querySelectorAll("iframe");
@@ -76,7 +80,7 @@
     frames().forEach((f) => { f.src = f.getAttribute("src"); });
   });
   document.getElementById("reset").addEventListener("click", () => {
-    try { localStorage.removeItem("fortune-closet:saju"); localStorage.removeItem("fortune-closet:v4"); } catch {}
+    try { localStorage.removeItem("fortune-closet:saju"); localStorage.removeItem("fortune-closet:v4"); localStorage.removeItem("fortune-closet:v5"); } catch {}
     frames().forEach((f) => { f.src = f.getAttribute("src"); });
   });
 </script>

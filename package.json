@@ -1,0 +1,9 @@
+{
+  "name": "fortune-closet",
+  "private": true,
+  "type": "module",
+  "description": "포춘옷장 — 정적 페이지 + Vercel 서버 기능(api/)",
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  }
+}

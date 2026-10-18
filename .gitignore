@@ -44,3 +44,7 @@ pnpm-debug.log*
 .idea/
 *.swp
 *.swo
+.env*
+
+# 사용 기록 내보내기 (개인 데이터)
+events.csv

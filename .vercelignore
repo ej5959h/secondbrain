@@ -1,0 +1,11 @@
+# 웹사이트에 공개하지 않을 것 (기획 문서·도구 설정 등)
+prds/
+skills/
+templates/
+scripts/
+.claude/
+.mcp.json
+CLAUDE.md
+README.md
+SETUP.md
+.env*

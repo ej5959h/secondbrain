@@ -8,7 +8,16 @@
       "index-v1-princess.html",
       "index-v3-tight.html",
       "compare.html",
-      "index-v4-commerce.html"
+      "index-v4-commerce.html",
+      "index-v5-tryon.html",
+      "assets/",
+      "api/",
+      "scripts/",
+      "package.json",
+      "package-lock.json",
+      "vercel.json",
+      ".vercelignore",
+      ".claude/skills/prototype/"
     ],
     "양쪽올리기": {
       "베프디_리모트": "bfd",
