@@ -508,7 +508,7 @@
                   <input type="text" id="mall-name" maxlength="10" placeholder="이름 (예: 29CM)" aria-label="쇼핑몰 이름">
                   <input type="text" id="mall-url" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="쇼핑몰 링크를 붙여넣어줘">
                 </div>
-                <p class="note">그 쇼핑몰에서 아무거나 검색한 뒤 주소창 링크를 붙여넣으면 거기서 바로 찾아줘. 메인 주소만 넣어도 돼.</p>
+                <p class="note">쇼핑몰 이름과 주소를 넣으면, 네이버에서 ‘쇼핑몰 이름 + 아이템’으로 찾아줘. 이름은 정확하게 써줘.</p>
                 <p class="note" id="mall-check"></p>
               </div>
 
@@ -849,28 +849,23 @@
   const musinsa = (q) => `https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(q)}`;
   const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  // 평소 쓰는 쇼핑몰: 사용자가 붙여넣은 링크를 분석해서, 검색 링크면 검색어만 바꿔 끼우고
-  // 메인 주소면 구글에서 그 쇼핑몰 안만 검색해요.
-  const SEARCH_KEYS = ["q", "query", "keyword", "keywords", "kwd", "search", "searchword", "searchkeyword", "searchterm", "search_query", "word", "text", "sw", "k"];
+  // 평소 쓰는 쇼핑몰: 주소가 올바른지만 확인하고, 검색은 네이버에서 '쇼핑몰 이름 + 아이템'으로 해요.
   function parseMall(raw) {
     raw = (raw || "").trim();
     if (!raw) return null;
     let u;
     try { u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`); } catch { return null; }
     if (!/^https?:$/.test(u.protocol) || !u.hostname.includes(".")) return null;
-    const key = [...u.searchParams.keys()].find((k) => SEARCH_KEYS.includes(k.toLowerCase()));
-    return { href: u.href, host: u.hostname.replace(/^(www|m)\./, ""), key: key || "" };
+    return { href: u.href, host: u.hostname.replace(/^(www|m)\./, "") };
   }
+  // 쇼핑몰마다 검색 주소 형식이 달라 직접 검색이 잘 안 돼서, 네이버에서 '쇼핑몰 이름 + 아이템'으로 찾아요
   function mallSearch(mall, q) {
     const p = parseMall(mall.url);
-    if (!p) return "";
-    if (p.key) {
-      const u = new URL(p.href);
-      u.searchParams.set(p.key, q);
-      return u.href;
-    }
-    return `https://www.google.com/search?q=${encodeURIComponent(`site:${p.host} ${q}`)}`;
+    const name = (mall.name || (p ? p.host.split(".")[0] : "")).trim();
+    if (!name) return "";
+    return `https://search.naver.com/search.naver?query=${encodeURIComponent(`${name} ${q}`)}`;
   }
+
   let myMall = null;
   const shopLink = (href, label) => `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(label)}${EXT}</a>`;
   const shopLinks = (q) => {
@@ -1162,11 +1157,10 @@
     const p = parseMall(url);
     if (!p) { el.textContent = "링크 모양이 아니야. 예: 29cm.co.kr"; return; }
     el.classList.add("ok");
-    el.textContent = p.key
-      ? `✓ ${p.host}에서 바로 검색할게`
-      : `✓ ${p.host} 안에서 구글로 찾아줄게 (검색 결과 링크를 넣으면 쇼핑몰에서 바로 검색돼)`;
+    el.textContent = `✓ 네이버에서 ‘${$("mall-name").value.trim() || p.host.split(".")[0]} + 아이템’으로 찾아줄게`;
   }
   $("mall-url").addEventListener("input", checkMall);
+  $("mall-name").addEventListener("input", checkMall);
 
   // ---------- 옷장 열기 · 입력 ----------
   function openCloset() {

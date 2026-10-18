@@ -17,7 +17,8 @@
       "package-lock.json",
       "vercel.json",
       ".vercelignore",
-      ".claude/skills/prototype/"
+      ".claude/skills/prototype/",
+      "manifest.json"
     ],
     "양쪽올리기": {
       "베프디_리모트": "bfd",
